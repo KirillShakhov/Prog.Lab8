@@ -1,6 +1,5 @@
 package lab;
 
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import lab.Commands.CommandInvoker;
 import lab.Commands.CommandReceiver;
 import lab.Commands.ConcreteCommands.*;
@@ -9,9 +8,7 @@ import lab.Commands.Utils.Creaters.ElementCreator;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -26,8 +23,8 @@ public class ClientController implements Runnable {
 	private static final int BUFF_SIZE = 1000000;
 	public static String name = null;
 	public static String pass = null;
-	String hostname = null;
-	int port = -1;
+	String hostname;
+	int port;
 
 	public ClientController(String hostname, String port) {
 		this.hostname = hostname;
@@ -75,10 +72,7 @@ public class ClientController implements Runnable {
 				while (true) {
 					selector.select();
 
-					Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-
-					while (iterator.hasNext()) {
-						SelectionKey key = (SelectionKey) iterator.next();
+					for (SelectionKey key : selector.selectedKeys()) {
 						//iterator.remove();
 						if (key.isValid()) {
 							SocketChannel client = (SocketChannel) key.channel();
@@ -104,28 +98,6 @@ public class ClientController implements Runnable {
 												sleep(1000);
 												continue;
 											}
-										}
-										catch (IOException e) {
-											System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
-											if (reconect_schetchick > 20) {
-												System.exit(0);
-											}
-											selector = Selector.open();
-											connectionClient = SocketChannel.open();
-											connectionClient.configureBlocking(false);
-											connectionClient.connect(new InetSocketAddress(hostname, port));
-											connectionClient.register(selector, SelectionKey.OP_CONNECT);
-											reconect_schetchick++;
-											sleep(1000);
-											continue;
-										}
-									}
-									/*
-									if (client.isConnectionPending()) {
-										try {
-											//invoke finishConnect() to complete the connection sequence
-											client.finishConnect();
-											System.out.println("Введите help");
 										} catch (IOException e) {
 											System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
 											if (reconect_schetchick > 20) {
@@ -141,21 +113,18 @@ public class ClientController implements Runnable {
 											continue;
 										}
 									}
-									client.register(selector, SelectionKey.OP_WRITE);
-									*/
 									if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
-										if (!isAuth){
+										if (!isAuth) {
 											System.out.println("Укажите имя пользователя:");
 											name = scanner.nextLine().trim();
 											System.out.println("Укажите пароль:");
 											pass = scanner.nextLine().trim();
-											Message message = new Message(new Auth(), name+":::"+pass);
+											Message message = new Message(new Auth(), name + ":::" + pass);
 											sendSocketObject(client, message);
 											key.interestOps(SelectionKey.OP_READ);
 											client.register(selector, SelectionKey.OP_READ);
 											continue;
-										}
-										else {
+										} else {
 											System.out.print(">");
 											Message message = commandInvoker.executeCommand(scanner.nextLine().trim().split(" "));
 											if (message == null) {
@@ -172,54 +141,43 @@ public class ClientController implements Runnable {
 										}
 									}
 									if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
-										if (!isAuth){
+										if (!isAuth) {
 											Message message = getSocketObject(client);
 											System.out.println(message.getString());
 											message.setUserPass(name, pass);
-											if (message.getString().equals("Неправильный пароль")){
-												isAuth = false;
-												name = null;
-												pass = null;
-												key.interestOps(SelectionKey.OP_WRITE);
-												client.register(selector, SelectionKey.OP_WRITE);
-												sleep(500);
-												continue;
+											switch (message.getString()) {
+												case "Неправильный пароль":
+													isAuth = false;
+													name = null;
+													pass = null;
+													key.interestOps(SelectionKey.OP_WRITE);
+													client.register(selector, SelectionKey.OP_WRITE);
+													sleep(500);
+													break;
+												case "Успешная авторизация":
+												case "Пользователь зарегистрирован":
+													isAuth = true;
+													System.out.println("Введите help");
+													key.interestOps(SelectionKey.OP_WRITE);
+													client.register(selector, SelectionKey.OP_WRITE);
+													sleep(500);
+													break;
+												case "Пользователь не зарегистрировн, произошла ошибка":
+													key.interestOps(SelectionKey.OP_WRITE);
+													client.register(selector, SelectionKey.OP_WRITE);
+													sleep(500);
+													break;
 											}
-											else if(message.getString().equals("Успешная авторизация")){
-												isAuth = true;
-												System.out.println("Введите help");
-												key.interestOps(SelectionKey.OP_WRITE);
-												client.register(selector, SelectionKey.OP_WRITE);
-												sleep(500);
-												continue;
-											}
-											else if(message.getString().equals("Пользователь зарегистрирован")){
-												isAuth = true;
-												System.out.println("Введите help");
-												key.interestOps(SelectionKey.OP_WRITE);
-												client.register(selector, SelectionKey.OP_WRITE);
-												sleep(500);
-												continue;
-											}
-											else if(message.getString().equals("Пользователь не зарегистрировн, произошла ошибка")){
-												key.interestOps(SelectionKey.OP_WRITE);
-												client.register(selector, SelectionKey.OP_WRITE);
-												sleep(500);
-												continue;
-											}
-										}
-										else {
+										} else {
 											Message message = getSocketObject(client);
 
 											System.out.println(message.getString());
 											key.interestOps(SelectionKey.OP_WRITE);
 											client.register(selector, SelectionKey.OP_WRITE);
 											sleep(500);
-											continue;
 										}
 									}
-								}
-								catch (IOException ex) {
+								} catch (IOException ex) {
 									System.out.println("Сервер закрыл соединение");
 									System.out.println("Повторное подлючение");
 									//client.register(selector, SelectionKey.OP_CONNECT);
@@ -230,9 +188,7 @@ public class ClientController implements Runnable {
 									connectionClient.connect(new InetSocketAddress(hostname, port));
 									key.interestOps(SelectionKey.OP_CONNECT);
 									connectionClient.register(selector, SelectionKey.OP_CONNECT);
-									continue;
-								}
-								catch (NoSuchElementException | InterruptedException e) {
+								} catch (NoSuchElementException | InterruptedException e) {
 									System.out.println("Завершение работы.");
 									client.close();
 									e.printStackTrace();
