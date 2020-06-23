@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static lab.ClientController.getSocketObject;
 import static lab.ClientController.sendSocketObject;
 
 /**
@@ -116,40 +117,50 @@ public class CommandReceiver {
                     if (musicBand != null) {
                         switch (command.split(" ")[0]) {
                             case "add":
-                                //sendSocketObject( ,new Message(new Add(), musicBand));
-                                //Thread.sleep(delay);
-                                //Receiver.receive(socketChannel);
+                                sendSocketObject(new Message(new Add(), musicBand));
+                                Thread.sleep(100);
+                                try {
+                                    Message message = getSocketObject();
+                                    System.out.println(message.getString());
+                                } catch (ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                    System.out.println("Команда не сработала");
+                                }
                                 break;
                             case "update":
-                                //sender.sendObject(new Message(new Update(), elementCreator.createMusicBand(), command.split(" ")[1]));
-                                //Thread.sleep(delay);
-                                //Receiver.receive(socketChannel);
+                                sendSocketObject(new Message(new Update(), musicBand));
+                                Thread.sleep(100);
+                                try {
+                                    Message message = getSocketObject();
+                                    System.out.println(message.getString());
+                                } catch (ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                    System.out.println("Команда не сработала");
+                                }
                                 break;
                             case "remove_greater":
-                                //sender.sendObject(new Message(new RemoveGreater(), musicBand));
-                                //Thread.sleep(delay);
-                                //Receiver.receive(socketChannel);
+                                sendSocketObject(new Message(new RemoveGreater(), musicBand));
+                                Thread.sleep(100);
+                                try {
+                                    Message message = getSocketObject();
+                                    System.out.println(message.getString());
+                                } catch (ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                    System.out.println("Команда не сработала");
+                                }
                                 break;
                             case "remove_lower":
-                                //sender.sendObject(new Message(new RemoveLower(), musicBand));
-                                //Thread.sleep(delay);
-                                //Receiver.receive(socketChannel);
+                                sendSocketObject(new Message(new RemoveLower(), musicBand));
+                                Thread.sleep(100);
+                                try {
+                                    Message message = getSocketObject();
+                                    System.out.println(message.getString());
+                                } catch (ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                    System.out.println("Команда не сработала");
+                                }
                                 break;
                         }
-                    }
-                } else if(line.split(" ")[0].equals("count_by_group_admin")) {
-                    parameters.clear();
-                    for (int i = 0; i < 5; i++) {
-                        if (line != null) {
-                            line = bufferedReader.readLine();
-                            parameters.add(line);
-                        } else { System.out.println("Не хватает параметров для создания объекта."); break; }
-                    }
-                    Album album = elementCreator.createScriptAlbum(parameters);
-                    if (album != null) {
-                        //sender.sendObject(new SerializedObjectCommand(new CountByGroupAdmin(), album));
-                        Thread.sleep(100);
-                        //Receiver.receive(socketChannel);
                     }
                 } else if (line.split(" ")[0].equals("execute_script")
                         && line.split(" ")[1].equals(ExecuteScript.getPath())) { System.out.println("Пресечена попытка рекурсивного вызова скрипта."); }

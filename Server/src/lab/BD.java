@@ -4,7 +4,6 @@ package lab;
 import lab.BasicClasses.*;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,8 +12,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import org.postgresql.Driver;
+
 
 /**
  * Класс - база данных, позволяет проводить операции с базой данных. Без него коллекция не будет работать.
