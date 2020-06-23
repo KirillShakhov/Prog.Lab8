@@ -7,6 +7,7 @@ public class Main {
         final String DB_URL;
         final String USER;
         final String PASS;
+
         if(args.length>0 && args[0].equals("mypc")){
             DB_URL = "jdbc:postgresql://localhost:5555/postgres";
             USER = "postgres";
