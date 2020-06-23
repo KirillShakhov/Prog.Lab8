@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -35,6 +36,8 @@ public class ClientController implements Runnable {
 
 	Selector selector;
 	static SocketChannel connectionClient;
+
+	public static ArrayList<String> level_list = new ArrayList<>();
 
 
 
