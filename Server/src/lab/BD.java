@@ -5,6 +5,7 @@ import lab.BasicClasses.*;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Класс - база данных, позволяет проводить операции с базой данных. Без него коллекция не будет работать.
@@ -190,6 +192,7 @@ public class BD {
         int f = 0;
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).getNumberOfParticipants() > musicBand.getNumberOfParticipants()) {
+                //noinspection SuspiciousListRemoveInLoop
                 data.remove(i);
                 f++;
             }
@@ -281,7 +284,13 @@ public class BD {
             Date creation_Date = Date.valueOf(musicBand.getCreationDate().toLocalDate());
             String numberOfParticipants = String.valueOf(musicBand.getNumberOfParticipants());
             String description = musicBand.getDescription();
-            Date establishment_Date = Date.valueOf(musicBand.getEstablishmentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            Date establishment_Date;
+            if (musicBand.getEstablishmentDate() != null) {
+                establishment_Date = Date.valueOf(musicBand.getEstablishmentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            }
+            else{
+                establishment_Date = null;
+            }
             String genre = String.valueOf(musicBand.getGenre());
             String album_name = musicBand.getBestAlbum().getName();
             String album_tracks = String.valueOf(musicBand.getBestAlbum().getTracks());
@@ -363,7 +372,7 @@ public class BD {
     public static boolean remove(int id) {
         try {
             Statement stmt = connection.createStatement();
-            String sql = "DELETE from DATA_BD where ID={};".format(Integer.toString(id));
+            String sql = String.format("DELETE from DATA_BD where ID=%d;", id);
             stmt.executeUpdate(sql);
             data.removeIf(m -> m.getID() == id);
             return true;
@@ -377,7 +386,7 @@ public class BD {
      * */
     public static boolean clean(){
         try {
-            data = new ArrayList<MusicBand>();
+            data = new ArrayList<>();
             return true;
         }
         catch (Exception e){
@@ -422,26 +431,10 @@ public class BD {
     /** Метод, позволяет отсортировать массив по текущему методу сортировки.*/
     public static void sort(){
         if(!BD.reverse){
-            Collections.sort(data, (player2, player1) -> {
-                if (player1.getID() < player2.getID()) {
-                    return 1;
-                } else if (player1.getID() > player2.getID()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            });
+            data.sort(Comparator.comparingLong(MusicBand::getID));
         }
         else{
-            Collections.sort(data, (player2, player1) -> {
-                if (player1.getID() > player2.getID()) {
-                    return 1;
-                } else if (player1.getID() < player2.getID()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            });
+            data.sort((player2, player1) -> Long.compare(player1.getID(), player2.getID()));
         }
     }
 
@@ -458,6 +451,7 @@ public class BD {
         int f = 0;
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).getNumberOfParticipants() < musicBand.getNumberOfParticipants()) {
+                //noinspection SuspiciousListRemoveInLoop
                 data.remove(i);
                 f++;
             }
@@ -469,9 +463,9 @@ public class BD {
         String sha1 = null;
         try {
             MessageDigest msdDigest = MessageDigest.getInstance("SHA-1");
-            msdDigest.update(input.getBytes("UTF-8"), 0, input.length());
+            msdDigest.update(input.getBytes(StandardCharsets.UTF_8), 0, input.length());
             sha1 = DatatypeConverter.printHexBinary(msdDigest.digest());
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {}
         return sha1;
     }
     private boolean createTable(){
