@@ -5,6 +5,7 @@ import lab.Commands.CommandReceiver;
 import lab.Commands.ConcreteCommands.*;
 import lab.Commands.SerializedCommands.Message;
 import lab.Commands.Utils.Creaters.ElementCreator;
+
 import java.io.*;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
@@ -12,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -28,6 +30,7 @@ public class ClientController implements Runnable {
 	static Scanner scanner = new Scanner(System.in);
 	static boolean isAuth = false;
 	static int reconect_schetchick = 1;
+	static SocketChannel client;
 
 	static CommandInvoker commandInvoker = new CommandInvoker();
 	ElementCreator elementCreator = new ElementCreator();
@@ -35,6 +38,8 @@ public class ClientController implements Runnable {
 
 	Selector selector;
 	static SocketChannel connectionClient;
+
+	public static ArrayList<String> level_list = new ArrayList<>();
 
 
 
@@ -79,16 +84,16 @@ public class ClientController implements Runnable {
 					for (SelectionKey key : selector.selectedKeys()) {
 						//iterator.remove();
 						if (key.isValid()) {
-							SocketChannel client = (SocketChannel) key.channel();
+							client = (SocketChannel) key.channel();
 							if (client != null) {
 								try {
-									if (connectThread(key, client, selector)){
+									if (connectThread(key, selector)){
 										continue;
 									}
-									if (writeThread(key, client, selector)){
+									if (writeThread(key, selector)){
 										continue;
 									}
-									if (readThread(key, client, selector)){
+									if (readThread(key, selector)){
 										continue;
 									}
 									sleep(10);
@@ -101,8 +106,8 @@ public class ClientController implements Runnable {
 									connectionClient = SocketChannel.open();
 									connectionClient.configureBlocking(false);
 									connectionClient.connect(new InetSocketAddress(hostname, port));
-									key.interestOps(SelectionKey.OP_CONNECT);
-									connectionClient.register(selector, SelectionKey.OP_CONNECT);
+									key.interestOps(SelectionKey.OP_WRITE);
+									connectionClient.register(selector, SelectionKey.OP_WRITE);
 								} catch (NoSuchElementException | InterruptedException e) {
 									System.out.println("Завершение работы.");
 									client.close();
@@ -124,15 +129,15 @@ public class ClientController implements Runnable {
 		}
 	}
 
-	public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
+	public static Message getSocketObject() throws IOException, ClassNotFoundException {
 		ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
-		socketChannel.read(data);
+		client.read(data);
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data.array());
 		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 		return (Message) objectInputStream.readObject();
 	}
 
-	private static void sendSocketObject(SocketChannel client, Message message) throws IOException {
+	public static void sendSocketObject(Message message) throws IOException {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
 		objectOutputStream.writeObject(message);
@@ -140,10 +145,10 @@ public class ClientController implements Runnable {
 		client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
 	}
 
-	private static boolean readThread(SelectionKey key, SocketChannel client, Selector selector) throws IOException, ClassNotFoundException, InterruptedException {
+	private static boolean readThread(SelectionKey key, Selector selector) throws IOException, ClassNotFoundException, InterruptedException {
 		if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
 			if (!isAuth) {
-				Message message = getSocketObject(client);
+				Message message = getSocketObject();
 				System.out.println(message.getString());
 				message.setUserPass(name, pass);
 				switch (message.getString()) {
@@ -170,8 +175,7 @@ public class ClientController implements Runnable {
 						break;
 				}
 			} else {
-				Message message = getSocketObject(client);
-
+				Message message = getSocketObject();
 				System.out.println(message.getString());
 				key.interestOps(SelectionKey.OP_WRITE);
 				client.register(selector, SelectionKey.OP_WRITE);
@@ -183,7 +187,7 @@ public class ClientController implements Runnable {
 		return false;
 	}
 
-	private static boolean writeThread(SelectionKey key, SocketChannel client, Selector selector) throws IOException {
+	private static boolean writeThread(SelectionKey key, Selector selector) throws IOException {
 		if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
 			if (!isAuth) {
 				System.out.println("Укажите имя пользователя:");
@@ -191,7 +195,7 @@ public class ClientController implements Runnable {
 				System.out.println("Укажите пароль:");
 				pass = scanner.nextLine().trim();
 				Message message = new Message(new Auth(), name + ":::" + pass);
-				sendSocketObject(client, message);
+				sendSocketObject(message);
 				key.interestOps(SelectionKey.OP_READ);
 				client.register(selector, SelectionKey.OP_READ);
 			} else {
@@ -199,7 +203,7 @@ public class ClientController implements Runnable {
 				Message message = commandInvoker.executeCommand(scanner.nextLine().trim().split(" "));
 				if (message != null) {
 					message.setUserPass(ClientController.name, ClientController.pass);
-					sendSocketObject(client, message);
+					sendSocketObject(message);
 					key.interestOps(SelectionKey.OP_READ);
 					client.register(selector, SelectionKey.OP_READ);
 				}
@@ -209,7 +213,7 @@ public class ClientController implements Runnable {
 		return false;
 	}
 
-	private static boolean connectThread(SelectionKey key, SocketChannel client, Selector selector) throws IOException, InterruptedException {
+	private static boolean connectThread(SelectionKey key, Selector selector) throws IOException, InterruptedException {
 		if ((key.interestOps() & SelectionKey.OP_CONNECT) != 0) {
 			try {
 				if (client.finishConnect()) {

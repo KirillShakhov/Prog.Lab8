@@ -4,7 +4,6 @@ package lab;
 import lab.BasicClasses.*;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,8 +12,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import org.postgresql.Driver;
+
 
 /**
  * Класс - база данных, позволяет проводить операции с базой данных. Без него коллекция не будет работать.
@@ -176,7 +176,7 @@ public class BD {
             String album_sales = String.valueOf(musicBand.getBestAlbum().getSales());
 
 
-            String sql = "UPDATE customer "
+            String sql = "UPDATE DATA_BD "
                     + "SET "
                     + "NAME = ?, "
                     + "X = ?, "
@@ -208,7 +208,7 @@ public class BD {
             statement.setInt(13, id);
 
             int numberOfUpdatedRows = statement.executeUpdate();
-            connection.commit();
+            //connection.commit();
             data.set(id, musicBand);
             return true;
         }

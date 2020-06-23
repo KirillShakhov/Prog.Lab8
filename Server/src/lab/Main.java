@@ -1,7 +1,5 @@
 package lab;
 
-import java.io.IOException;
-
 public class Main {
     public static void main(String[] args) {
         final String DB_URL;
