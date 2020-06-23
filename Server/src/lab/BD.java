@@ -176,7 +176,7 @@ public class BD {
             String album_sales = String.valueOf(musicBand.getBestAlbum().getSales());
 
 
-            String sql = "UPDATE customer "
+            String sql = "UPDATE DATA_BD "
                     + "SET "
                     + "NAME = ?, "
                     + "X = ?, "
@@ -208,7 +208,7 @@ public class BD {
             statement.setInt(13, id);
 
             int numberOfUpdatedRows = statement.executeUpdate();
-            connection.commit();
+            //connection.commit();
             data.set(id, musicBand);
             return true;
         }
