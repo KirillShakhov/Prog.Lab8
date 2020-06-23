@@ -10,12 +10,12 @@ import java.io.IOException;
 /**
  * Конкретная команда добавления в коллекцию.
  */
-//TODO дату можно оставить пустой.
+
 public class Add extends Command {
     private static final long serialVersionUID = 33L;
 
     @Override
-    public String execute(Object argObject) throws IOException {
+    public String execute(Object argObject) {
         CommandReceiver commandReceiver = new CommandReceiver();
         return commandReceiver.add(((Message) argObject).getMusicBand());
     }

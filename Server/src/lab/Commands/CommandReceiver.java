@@ -19,29 +19,29 @@ public class CommandReceiver {
 
     }
 
-    public String info() throws IOException {
+    public String info() {
         System.out.println("Клиенту отправлен результат работы команды INFO");
         return "Коллекция типа: ArrayList\nДата инициализации: "+BD.getCreateTime()+"\nКоличество элементов: "+BD.size();
         //return "Коллекция типа: ArrayList\nДата инициализации: ";
     }
 
-    public String show() throws IOException {
+    public String show() {
         BD.sort();
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if(BD.size() != 0) {
             for (int i = 0; i < BD.size(); i++) {
-                result = result + BD.get(i).toString() + "\n";
+                result.append(BD.get(i).toString()).append("\n");
             }
         }
         else{
-            result = ("Элементы отсутствуют");
+            result = new StringBuilder(("Элементы отсутствуют"));
         }
         System.out.println("Клиенту отправлен результат работы команды SHOW");
-        return result;
+        return result.toString();
     }
 
-    public String add(MusicBand o) throws IOException {
-        o.setID((long) BD.giveID());
+    public String add(MusicBand o) {
+        o.setID(BD.giveID());
         o.setCreationDate(LocalDateTime.now());
         if (Validator.validateMusicBand(o)) {
             if(BD.add(o)){
@@ -58,9 +58,8 @@ public class CommandReceiver {
     /**
      *
      */
-    public String update(Message mes) throws IOException {
-        Integer groupId;
-
+    public String update(Message mes) {
+        int groupId;
         try {
             groupId = Integer.parseInt(mes.getArgs());
             if (BD.checkExist(groupId)) {
@@ -69,8 +68,11 @@ public class CommandReceiver {
                     o.setID((long)groupId);
                     o.setCreationDate(LocalDateTime.now());
                     if(BD.get(groupId).getUser_creator().equals(o.getUser_creator())) {
-                        BD.update(o, groupId);
-                        return "Команда update выполнена.";
+                        if(BD.update(o, groupId)) {
+                            return "Команда update выполнена.";
+                        }else{
+                            return "Команда update не выполнена.";
+                        }
                     }
                     else{
                         return "Команда update не выполнена. Вы не владелец этого объекта.";
@@ -89,12 +91,18 @@ public class CommandReceiver {
      *
      * @param ID - удаление по ID.
      */
-    public String removeById(String ID) throws IOException {
-        Integer groupId;
+    public String removeById(String ID, String name) {
+        int groupId;
         try {
             groupId = Integer.parseInt(ID);
             if (BD.checkExist(groupId)) {
-                BD.remove(groupId);
+                if(BD.get(groupId).getUser_creator().equals(name)) {
+                    if(BD.remove(groupId)) {
+                        return "Объект удален.";
+                    }else{
+                        return "Команда remove не выполнена.";
+                    }
+                }
                 return "Элемент с ID " + groupId + " успешно удален из коллекции.";
             } else {
                 return "Элемента с таким ID нет в коллекции.";
@@ -104,12 +112,15 @@ public class CommandReceiver {
         }
     }
 
-    public String removeByDescription(String description) throws IOException {
+    public String removeByDescription(String description, String name) {
         int j = 0;
         for(int i = 0; i < BD.size(); i++){
             if(BD.get(i).getDescription().equals(description)){
-                BD.remove(i);
-                j++;
+                if(BD.get(i).getUser_creator().equals(name)) {
+                    if(BD.remove(i)) {
+                        j++;
+                    }
+                }
             }
         }
         if(j == 0) {
@@ -120,7 +131,7 @@ public class CommandReceiver {
         }
     }
 
-    public String  clear() throws IOException {
+    public String  clear() {
         BD.clean();
 
         return "Коллекция успешно очищена.";
@@ -128,7 +139,7 @@ public class CommandReceiver {
 
 
 
-    public String removeLower(MusicBand musicBand) throws IOException {
+    public String removeLower(MusicBand musicBand) {
 
         if (Validator.validateMusicBand(musicBand)) {
             return BD.removeLower(musicBand);
@@ -137,21 +148,21 @@ public class CommandReceiver {
         }
     }
 
-    public String  filterContainsName(String arg) throws IOException {
-        String result = "";
+    public String  filterContainsName(String arg) {
+        StringBuilder result = new StringBuilder();
         int j = 0;
         for (int i = 0; i < BD.size(); i++) {
             if (BD.get(i).getName().contains(arg)) {
-                result += BD.get(i).toString() + "\n";
+                result.append(BD.get(i).toString()).append("\n");
                 j++;
             }
         }
         if (j != 0) {
-            return result;
+            return result.toString();
         } else { return "Таких элементов нет";}
     }
 
-    public String countGreaterThanBestAlbum(Album musicBand) throws IOException {
+    public String countGreaterThanBestAlbum(Album musicBand) {
         String result = "";
         int j = 0;
         for(int i = 0; i < BD.size(); i++){
@@ -162,7 +173,7 @@ public class CommandReceiver {
         } else { return "Таких элементов нет";}
     }
 
-    public String reorder() throws IOException {
+    public String reorder() {
         BD.reverse = !BD.reverse;
         BD.sort();
         return "Коллекция успешно отсортирована.";

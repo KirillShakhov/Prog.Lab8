@@ -129,7 +129,7 @@ public class MusicBand implements Comparable<MusicBand>, Serializable {
      */
     @Override
     public String toString() {
-        return  "________________________________________________________________" + "\n" +
+        /*return  "________________________________________________________________" + "\n" +
                 "|ID: " + id + "\n" +
                 "|Имя: (" + name + ")\n" +
                 "|Координаты: " + coordinates + "\n" +
@@ -141,6 +141,9 @@ public class MusicBand implements Comparable<MusicBand>, Serializable {
                 "|Лучший альбом: " + bestAlbum + "\n" +
                 "|Владелец: " + user_creator + "\n" +
                 "________________________________________________________________";
+
+         */
+        return "|ID: " + String.format("%-3s", id) + "|Имя: (" + String.format("%20s", name) + ")" + "|Координаты: " + String.format("%25s", coordinates)  + "|Дата добавления в базу: " + String.format("%-8s", creationDate) + "|Число участников: " + String.format("%5s", numberOfParticipants) + "|Описание: (" + String.format("%20s", description) + ")" + "|Дата создания: " + String.format("%-8s", establishmentDate) + "|Жанр: " + String.format("%10s", genre) + "|Лучший альбом: " + String.format("%60s", bestAlbum) + "|Владелец: " + String.format("%15s", user_creator) + "|";
     }
     @Override
     public int compareTo(MusicBand anotherMusicBand)

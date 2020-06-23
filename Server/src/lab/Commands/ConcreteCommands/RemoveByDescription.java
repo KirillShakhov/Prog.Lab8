@@ -13,9 +13,9 @@ public class RemoveByDescription extends Command {
     private static final long serialVersionUID = 33L;
 
     @Override
-    public String execute(Object argObject) throws IOException {
+    public String execute(Object argObject) {
         String arg = ((Message)argObject).getArgs();
         CommandReceiver commandReceiver = new CommandReceiver();
-        return commandReceiver.removeByDescription(arg);
+        return commandReceiver.removeByDescription(arg, ((Message) argObject).getUser_name());
     }
 }

@@ -157,10 +157,63 @@ public class BD {
     public static boolean update(MusicBand musicBand, Integer id){
         try{
             //TODO проверить
+            String name = musicBand.getName();
+            System.out.println(musicBand.getCreationDate());
+            Date creation_Date = Date.valueOf(musicBand.getCreationDate().toLocalDate());
+            String numberOfParticipants = String.valueOf(musicBand.getNumberOfParticipants());
+            String description = musicBand.getDescription();
+            Date establishment_Date;
+            if (musicBand.getEstablishmentDate() != null) {
+                establishment_Date = Date.valueOf(musicBand.getEstablishmentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            }
+            else{
+                establishment_Date = null;
+            }
+            String genre = String.valueOf(musicBand.getGenre());
+            String album_name = musicBand.getBestAlbum().getName();
+            String album_tracks = String.valueOf(musicBand.getBestAlbum().getTracks());
+            String album_lenght = String.valueOf(musicBand.getBestAlbum().getLength());
+            String album_sales = String.valueOf(musicBand.getBestAlbum().getSales());
+
+
+            String sql = "UPDATE customer "
+                    + "SET "
+                    + "NAME = ?, "
+                    + "X = ?, "
+                    + "Y = ?, "
+                    + "CREATION_DATE = ?,"
+                    + "NUMBER_OF_PARTICIPANTS = ?,"
+                    + "DESCRIPTION = ?,"
+                    + "ESTABLISHMENT_DATE = ?,"
+                    + "GENRE = ?,"
+                    + "ALBUM_NAME = ?,"
+                    + "ALBUM_TRACKS = ?,"
+                    + "ALBUM_LENGTH = ?,"
+                    + "ALBUM_SALES = ? "
+                    + "WHERE ID=?;";
+
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, name);
+            statement.setFloat(2, Float.parseFloat(String.valueOf(musicBand.getCoordinates().getX())));
+            statement.setFloat(3, musicBand.getCoordinates().getY());
+            statement.setDate(4, creation_Date);
+            statement.setInt(5, Integer.parseInt(numberOfParticipants));
+            statement.setString(6, description);
+            statement.setDate(7, establishment_Date);
+            statement.setString(8, genre);
+            statement.setString(9, album_name);
+            statement.setInt(10, Integer.parseInt(album_tracks));
+            statement.setInt(11, Integer.parseInt(album_lenght));
+            statement.setInt(12, Integer.parseInt(album_sales));
+            statement.setInt(13, id);
+
+            int numberOfUpdatedRows = statement.executeUpdate();
+            connection.commit();
             data.set(id, musicBand);
             return true;
         }
         catch (Exception e){
+            e.printStackTrace();
             return false;
         }
     }
@@ -316,12 +369,7 @@ public class BD {
             preparedStatement.setString(14, user_creator);
 
             preparedStatement.executeUpdate();
-            //System.out.println(sql);
-            /*String sql = "INSERT INTO DATAS (ID,NAME,X,Y,CREATION_DATE,NUMBER_OF_PARTICIPANTS,DESCRIPTION,ESTABLISHMENT_DATE,GENRE,ALBUM_NAME,ALBUM_TRACKS,ALBUM_LENGTH,ALBUM_SALES,USER_CREATOR) " +
-                                    "VALUES ({},{},{},{},{},{},{},{},{},{},{},{},{},{});".format(Long.toString();
 
-             */
-            //stmt.executeUpdate(sql);
             data.add(musicBand);
             return true;
         }
