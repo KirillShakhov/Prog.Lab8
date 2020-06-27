@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <scp trust="true" password="kts231" localFile="C:\Users\kiril\IdeaProjects\Lab8\Client\target\Client-1.0-SNAPSHOT.jar" remoteToFile="s285896@helios.se.ifmo.ru:/home/s285896/lab8/client.jar" port="2222" verbose="true"></scp>
+</target>
+</project>
