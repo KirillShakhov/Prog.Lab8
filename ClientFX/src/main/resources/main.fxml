@@ -12,6 +12,7 @@
 <?import javafx.scene.text.Text?>
 
 <!--suppress ALL -->
+
 <AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientfx.MainController">
    <children>
       <AnchorPane layoutY="62.0" prefHeight="537.0" prefWidth="800.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
@@ -22,12 +23,12 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="660.0" prefWidth="426.0">
                            <children>
-                              <TableView prefHeight="431.0" prefWidth="432.0" style="-fx-background-color: #ddfff8;">
+                              <TableView fx:id="table" prefHeight="431.0" prefWidth="432.0" style="-fx-background-color: #ddfff8;">
                                 <columns>
-                                  <TableColumn prefWidth="54.0" style="-fx-background-color: #47e5c8;" text="ID" />
-                                  <TableColumn prefWidth="102.0" style="-fx-background-color: #47e5c8;" text="NAME" />
-                                    <TableColumn prefWidth="105.0" style="-fx-background-color: #47e5c8;" text="CR_DATE" />
-                                    <TableColumn prefWidth="170.0" style="-fx-background-color: #47e5c8;" text="DESCRIPTION" />
+                                  <TableColumn fx:id="table_id" prefWidth="54.0" style="-fx-background-color: #47e5c8;" text="ID" />
+                                  <TableColumn fx:id="table_name" prefWidth="102.0" style="-fx-background-color: #47e5c8;" text="NAME" />
+                                    <TableColumn fx:id="table_date" prefWidth="105.0" style="-fx-background-color: #47e5c8;" text="CR_DATE" />
+                                    <TableColumn fx:id="table_description" prefWidth="170.0" style="-fx-background-color: #47e5c8;" text="DESCRIPTION" />
                                 </columns>
                               </TableView>
                            </children>

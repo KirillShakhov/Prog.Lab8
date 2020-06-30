@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
@@ -38,6 +40,22 @@ public class MainController {
 
     @FXML
     private Button exit_button;
+
+    @FXML
+    private TableView<?> table;
+
+    @FXML
+    private TableColumn<?, ?> table_id;
+
+    @FXML
+    private TableColumn<?, ?> table_name;
+
+    @FXML
+    private TableColumn<?, ?> table_date;
+
+    @FXML
+    private TableColumn<?, ?> table_description;
+
 
     private double xOffSet;
     private double yOffSet;

@@ -80,14 +80,14 @@ public class AuthController {
             }
             if (login_name_field.getText().equals("123") && login_pass_field.getText().equals("123")){
                 login_pass_error.setVisible(false);
-//                login_button.getScene().getWindow().hide();
-//                try {
-//                    Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
-//                    Main.stage.setScene(new Scene(root));
-//                    Main.stage.showAndWait();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+                //login_button.getScene().getWindow().hide();
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
+                    Main.stage.setScene(new Scene(root));
+                    Main.stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
