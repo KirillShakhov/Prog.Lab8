@@ -3,7 +3,6 @@
   <component name="SshConfigs">
     <configs>
       <sshConfig authType="PASSWORD" host="helios.se.ifmo.ru" id="e3a701bb-14f1-4519-ac3f-658554d63887" port="2222" customName="helios.se.ifmo.ru" nameFormat="CUSTOM" username="s285896" />
-      <sshConfig authType="PASSWORD" host="helios.se.ifmo.ru" id="3fa4f6e6-d891-4e58-b6c6-cd95f5a3623b" port="2222" customName="helios.se.ifmo.ru" nameFormat="CUSTOM" username="s285896" />
     </configs>
   </component>
 </project>

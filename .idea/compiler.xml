@@ -7,12 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Server" />
+        <module name="ClientFX" />
         <module name="Client" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Client" target="1.8" />
-      <module name="Lab8" target="1.5" />
+      <module name="ClientFX" target="1.8" />
+      <module name="Lab8Prog" target="1.5" />
       <module name="Server" target="1.8" />
     </bytecodeTargetLevel>
   </component>

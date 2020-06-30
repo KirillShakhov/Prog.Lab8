@@ -1,6 +1,5 @@
 lab\Commands\ConcreteCommands\FilterContainsName.class
 lab\Commands\ConcreteCommands\Help.class
-lab\GUI.class
 lab\Main.class
 lab\Commands\Utils\Readers\PrimitiveAndReferenceReaders\PrimitiveIntReader.class
 lab\Commands\Utils\Readers\NotPrimitiveReaders\DateReader.class

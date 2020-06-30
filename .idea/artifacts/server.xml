@@ -1,12 +1,13 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="server">
+  <artifact type="jar" name="server">
     <output-path>$PROJECT_DIR$/out/artifacts/server</output-path>
     <root id="archive" name="server.jar">
       <element id="module-output" name="Server" />
-      <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.2.14" />
+      <element id="file-copy" path="$PROJECT_DIR$/Server/lib/postgresql-42.2.14.jre7.jar" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/Server/META-INF/MANIFEST.MF" />
       </element>
+      <element id="extracted-dir" path="$PROJECT_DIR$/Server/lib/postgresql-42.2.14.jre7.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
