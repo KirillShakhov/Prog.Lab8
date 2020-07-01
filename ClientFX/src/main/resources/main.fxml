@@ -131,7 +131,7 @@
          </children></AnchorPane>
       <AnchorPane layoutX="300.0" layoutY="13.0" prefHeight="36.0" prefWidth="194.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0">
          <children>
-            <Text fill="#8a8a8a" layoutY="25.10546875" stroke="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Kirill" textAlignment="CENTER" wrappingWidth="193.9999884366989" AnchorPane.bottomAnchor="6.65625" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.1563301086425781E-5" AnchorPane.topAnchor="7.0">
+            <Text fx:id="name" fill="#8a8a8a" layoutY="25.10546875" stroke="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Kirill" textAlignment="CENTER" wrappingWidth="193.9999884366989" AnchorPane.bottomAnchor="6.65625" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.1563301086425781E-5" AnchorPane.topAnchor="7.0">
                <font>
                   <Font name="Arial" size="20.0" />
                </font>
@@ -158,7 +158,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="leave_button" layoutX="697.0" layoutY="14.0" mnemonicParsing="false" opacity="0.88" prefHeight="34.0" prefWidth="43.0" style="-fx-background-color: #ff0000;" text="🡒" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="leave_button" layoutX="697.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#leave" opacity="0.88" prefHeight="34.0" prefWidth="43.0" style="-fx-background-color: #ff0000;" text="🡒" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="15.0" />
          </font>

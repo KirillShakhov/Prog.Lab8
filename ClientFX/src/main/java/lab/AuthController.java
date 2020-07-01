@@ -47,6 +47,9 @@ public class AuthController {
     private Text register_pass_error;
 
     @FXML
+    private Text register_passnull_error;
+
+    @FXML
     private Text register_name_error;
 
     @FXML
@@ -86,7 +89,7 @@ public class AuthController {
             if(result.equals("Неправильный пароль")){
                 login_pass_error.setVisible(true);
             }
-            if (result.equals("Успешная авторизация")){
+            else if (result.equals("Успешная авторизация")){
                 ClientController.name = login_name_field.getText();
                 ClientController.pass = login_pass_field.getText();
                 login_pass_error.setVisible(false);
@@ -101,7 +104,7 @@ public class AuthController {
             }
             else{
                 System.out.println("Проблемы");
-                System.out.println(result);
+                System.out.println("///////"+result);
             }
         }
     }
@@ -123,18 +126,23 @@ public class AuthController {
     void register(MouseEvent event) {
         if(!register_pass_field.getText().equals(register_pass2_field.getText())) {
             register_pass_error.setVisible(true);
+            register_name_error.setVisible(false);
         }
-        else{
+        else if (register_pass_field.getText().equals("")){
             register_pass_error.setVisible(false);
+            register_passnull_error.setVisible(true);
+            register_name_error.setVisible(false);
+        } else{
+            register_pass_error.setVisible(false);
+            register_passnull_error.setVisible(false);
+            register_name_error.setVisible(false);
             String result = fastWrite(new Message(new Register(), register_name_field.getText() + ":::" + register_pass_field.getText()));
 
             if(result.equals("Имя пользователя занято")){
                 register_name_error.setVisible(true);
-                register_pass_error.setVisible(false);
             }
             else if(result.equals("Пользователь зарегистрирован")){
                 register_name_error.setVisible(false);
-                register_pass_error.setVisible(false);
                 ClientController.name = register_name_field.getText();
                 ClientController.pass = register_pass_field.getText();
                 try {
@@ -147,7 +155,7 @@ public class AuthController {
             }
             else{
                 System.out.println("проблемы");
-                System.out.println(result);
+                System.out.println("///////"+result);
             }
         }
     }

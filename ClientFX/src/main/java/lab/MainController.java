@@ -1,15 +1,22 @@
 package lab;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 public class MainController {
+    @FXML
+    private Text name;
 
     @FXML
     private ResourceBundle resources;
@@ -78,15 +85,20 @@ public class MainController {
     }
 
     @FXML
-    void initialize() {
-        assert parent != null : "fx:id=\"parent\" was not injected: check your FXML file 'main.fxml'.";
-        assert register_button1 != null : "fx:id=\"register_button1\" was not injected: check your FXML file 'main.fxml'.";
-        assert register_button11 != null : "fx:id=\"register_button11\" was not injected: check your FXML file 'main.fxml'.";
-        assert register_button12 != null : "fx:id=\"register_button12\" was not injected: check your FXML file 'main.fxml'.";
-        assert exit_button111 != null : "fx:id=\"exit_button111\" was not injected: check your FXML file 'main.fxml'.";
-        assert exit_button11 != null : "fx:id=\"exit_button11\" was not injected: check your FXML file 'main.fxml'.";
-        assert leave_button != null : "fx:id=\"exit_button2\" was not injected: check your FXML file 'main.fxml'.";
-        assert exit_button != null : "fx:id=\"exit_button\" was not injected: check your FXML file 'main.fxml'.";
+    void leave(MouseEvent event) {
+        ClientController.name = null;
+        ClientController.pass = null;
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/auth.fxml"));
+            Main.stage.setScene(new Scene(root));
+            Main.stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @FXML
+    void initialize() {
+        name.setText(ClientController.name);
     }
 }

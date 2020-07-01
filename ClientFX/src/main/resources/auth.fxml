@@ -8,6 +8,7 @@
 <?import javafx.scene.text.Text?>
 
 <!--suppress ALL -->
+
 <AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lab.AuthController">
    <children>
       <AnchorPane layoutY="62.0" prefHeight="537.0" prefWidth="800.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
@@ -29,6 +30,7 @@
                   <TextField fx:id="register_pass_field" layoutX="53.0" layoutY="221.0" prefHeight="40.0" prefWidth="218.0" promptText="Пароль" style="-fx-background-color: #ddfff8;" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="55.0" />
                   <Text fx:id="register_pass_error" fill="RED" layoutX="54.0" layoutY="278.0" strokeType="OUTSIDE" strokeWidth="0.0" text="пароли не совпадают" visible="false" wrappingWidth="182.936767578125" AnchorPane.leftAnchor="54.0" AnchorPane.rightAnchor="89.063232421875" />
                   <Text fx:id="register_name_error" fill="RED" layoutX="54.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="имя занято" visible="false" wrappingWidth="182.936767578125" AnchorPane.leftAnchor="54.0" AnchorPane.rightAnchor="89.063232421875" />
+                  <Text fx:id="register_passnull_error" fill="RED" layoutX="54.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="пароль не может быть пустым" visible="false" wrappingWidth="217.99998879432678" />
                </children>
             </AnchorPane>
             <AnchorPane layoutX="36.0" layoutY="50.0" maxHeight="500.0" maxWidth="500.0" prefHeight="375.0" prefWidth="325.0" style="-fx-background-color: #93EFDE#93EFDE; -fx-background-radius: 10;" AnchorPane.bottomAnchor="45.80000000000001" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="50.0">
