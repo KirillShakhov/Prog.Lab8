@@ -41,7 +41,7 @@
                         <configuration>
                             <target>
                                 <scp localFile="${project.basedir}\target\Client-1.0-SNAPSHOT.jar"
-                                     remoteToFile="s285896@helios.se.ifmo.ru:/home/s285896/lab8/lab.jar" verbose="true"
+                                     remoteToFile="s285896@helios.se.ifmo.ru:/home/s285896/lab8/client.jar" verbose="true"
                                      password="kts231" trust="true" port="2222">
                                 </scp>
                             </target>

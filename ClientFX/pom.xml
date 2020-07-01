@@ -67,6 +67,49 @@
                     <mainClass>lab.Main</mainClass>
                 </configuration>
             </plugin>
+            <!-- =========================================== -->
+            <!-- make sure antrun is after packaging plugins -->
+            <!-- =========================================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>scp-to-remote</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <scp localFile="${project.basedir}\target\ClientFX-1.0-SNAPSHOT.jar"
+                                     remoteToFile="s285896@helios.se.ifmo.ru:/home/s285896/lab8/clientfx.jar" verbose="true"
+                                     password="kts231" trust="true" port="2222">
+                                </scp>
+                            </target>
+                        </configuration>
+
+                    </execution>
+                </executions>
+                <!-- libraries for scp impl      -->
+                <!-- antrun doesn't use os's scp -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.53</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!-- =========================================== -->
+            <!--   antrun plugin end                         -->
+            <!-- =========================================== -->
         </plugins>
     </build>
     <dependencies>
