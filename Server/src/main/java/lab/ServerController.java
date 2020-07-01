@@ -2,6 +2,7 @@ package lab;
 
 import lab.Commands.Command;
 import lab.Commands.ConcreteCommands.Auth;
+import lab.Commands.ConcreteCommands.Register;
 import lab.Commands.SerializedCommands.Message;
 
 import java.io.*;
@@ -83,14 +84,12 @@ public class ServerController implements Runnable {
 	}
 
 	public static Message getSocketObjet(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
-		System.out.println("ожидаем сообщение");
 		ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
 		socketChannel.read(data);
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data.array());
 		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 		Message message = (Message)objectInputStream.readObject();
 		message.setSocketChannel(socketChannel);
-		System.out.println("получено сообщение");
 		return message;
 	}
 
@@ -124,7 +123,7 @@ public class ServerController implements Runnable {
 			SocketChannel channel = (SocketChannel) key.channel();
 			String result = "Неизвестная команда";
 			for (Message mes : incomingMessages){
-				if(BD.checkPass(mes.getUser_name(), mes.getPass()) || (mes.getCommand().getClass() == Auth.class)) {
+				if(BD.checkPass(mes.getUser_name(), mes.getPass()) || (mes.getCommand().getClass() == Auth.class) || (mes.getCommand().getClass() == Register.class)) {
 					if(mes.getSocketChannel().equals(channel)){
 						Command command = mes.getCommand();
 						result = command.execute(mes);

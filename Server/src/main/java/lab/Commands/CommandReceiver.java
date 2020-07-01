@@ -189,7 +189,7 @@ public class CommandReceiver {
 
     public String auth(String string) {
         String[] s = string.split(":::", 2);
-        int result = BD.findUser(s[0], s[1]);
+        int result = BD.authUser(s[0], s[1]);
         if(result == 1){
             return "Успешная авторизация";
         }
@@ -197,12 +197,23 @@ public class CommandReceiver {
             return "Неправильный пароль";
         }
         else{
+            return "Пользователь не найден";
+        }
+    }
+
+    public String register(String string) {
+        String[] s = string.split(":::", 2);
+        int result = BD.registerUser(s[0], s[1]);
+        if(result == 0){
             if (BD.addUser(new User(s[0], s[1]))) {
                 return "Пользователь зарегистрирован";
             }
             else{
                 return "Пользователь не зарегистрировн, произошла ошибка";
             }
+        }
+        else{
+            return "Имя пользователя занято";
         }
     }
 }

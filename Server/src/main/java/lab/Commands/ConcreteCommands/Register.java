@@ -8,12 +8,12 @@ import lab.Commands.SerializedCommands.Message;
 /**
  * Конкретная команда добавления в коллекцию.
  */
-public class Auth extends Command {
+public class Register extends Command {
     private static final long serialVersionUID = 33L;
 
     @Override
     public String execute(Object argObject) {
         CommandReceiver commandReceiver = new CommandReceiver();
-        return commandReceiver.auth(((Message) argObject).getArgs());
+        return commandReceiver.register(((Message) argObject).getArgs());
     }
 }

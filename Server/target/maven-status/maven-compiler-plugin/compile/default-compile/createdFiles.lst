@@ -22,4 +22,5 @@ lab\Commands\ConcreteCommands\Show.class
 lab\BasicClasses\Coordinates.class
 lab\BasicClasses\MusicBand.class
 lab\Commands\ConcreteCommands\CountGreaterThanBestAlbum.class
+lab\Commands\ConcreteCommands\Register.class
 lab\Commands\SerializedCommands\Message.class

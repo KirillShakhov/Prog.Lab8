@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import lab.Commands.ConcreteCommands.Auth;
+import lab.Commands.ConcreteCommands.Register;
 import lab.Commands.SerializedCommands.Message;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -77,19 +78,16 @@ public class AuthController {
         String result = "";
         Message message = new Message(new Auth(), login_name_field.getText() + ":::" + login_pass_field.getText());
         try {
-
             if(writeThread(message)) {
                 result = readThread();
             }else {
                 result = "сообщение не отправлено";
             }
-
-
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        if(result.equals("Имя не найдено")){
+        if(result.equals("Пользователь не найден")){
             login_name_error.setVisible(true);
             login_pass_error.setVisible(false);
         }
@@ -133,25 +131,43 @@ public class AuthController {
 
     @FXML
     void register(MouseEvent event) {
-        if(register_name_field.getText().equals("123")){
-            register_name_error.setVisible(true);
-            register_pass_error.setVisible(false);
+        if(!register_pass_field.getText().equals(register_pass2_field.getText())) {
+            register_pass_error.setVisible(true);
         }
         else{
-            register_name_error.setVisible(false);
-            //noinspection RedundantIfStatement
-            if(register_pass_field.getText().equals(register_pass2_field.getText())) {
+            register_pass_error.setVisible(false);
+            String result = "";
+            Message message = new Message(new Register(), register_name_field.getText() + ":::" + register_pass_field.getText());
+            try {
+                if(writeThread(message)) {
+                    result = readThread();
+                }else {
+                    result = "сообщение не отправлено";
+                }
+            } catch (IOException | ClassNotFoundException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(result.equals("Имя пользователя занято")){
+                register_name_error.setVisible(true);
                 register_pass_error.setVisible(false);
-                //TODO регистрация
+            }
+            else if(result.equals("Пользователь зарегистрирован")){
+                register_name_error.setVisible(false);
+                register_pass_error.setVisible(false);
+                ClientController.name = register_name_field.getText();
+                ClientController.pass = register_pass_field.getText();
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
+                    Main.stage.setScene(new Scene(root));
+                    Main.stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             else{
-                register_pass_error.setVisible(true);
+                System.out.println("проблемы");
+                System.out.println(result);
             }
-        }
-        try {
-            sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

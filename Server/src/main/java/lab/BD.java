@@ -253,6 +253,8 @@ public class BD {
         return String.format("Удалено %s элементов", f);
     }
 
+
+
     /** Метод, позволяет загрузить коллекцию из файла.
      *
      * @return возвращает успешность выполнения метода. true - успех, false - исключение
@@ -549,7 +551,7 @@ public class BD {
         }
     }
 
-    public static int findUser(String name, String pass){
+    public static int authUser(String name, String pass){
         User result = null;
         for(User user : users){
             if(user.getName().equals(name)){
@@ -568,9 +570,27 @@ public class BD {
             }
         }
         else {
+            System.out.println("Пользователь не найден");
+            return 0;// Пользователь не найден
+        }
+    }
+
+    public static int registerUser(String name, String pass){
+        User result = null;
+        for(User user : users){
+            if(user.getName().equals(name)){
+                result = user;
+                break;
+            }
+        }
+        if(result != null){
+            System.out.println("Имя пользователя занято");
+            return -1;
+        }
+        else {
             users.add(new User(name, sha1(pass)));
             System.out.println("Пользователь зарегистрирован");
-            return 0;// Успешная регистрация
+            return 0;// Пользователь зарегистрирован
         }
     }
     public static boolean checkPass(String name, String pass){
