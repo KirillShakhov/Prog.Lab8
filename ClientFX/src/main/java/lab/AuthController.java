@@ -17,6 +17,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 import static java.lang.Thread.sleep;
+import static lab.ClientController.readThread;
+import static lab.ClientController.writeThread;
 
 public class AuthController {
 
@@ -74,7 +76,7 @@ public class AuthController {
     void login(MouseEvent event) {
         String result = "";
         Message message = new Message(new Auth(), login_name_field.getText() + ":::" + login_pass_field.getText());
-        /*try {
+        try {
 
             if(writeThread(message)) {
                 result = readThread();
@@ -86,7 +88,7 @@ public class AuthController {
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }
-        */
+
         if(result.equals("Имя не найдено")){
             login_name_error.setVisible(true);
             login_pass_error.setVisible(false);

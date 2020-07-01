@@ -36,7 +36,7 @@ public class ClientController implements Runnable {
 	ElementCreator elementCreator = new ElementCreator();
 	CommandReceiver commandReceiver = new CommandReceiver(commandInvoker, elementCreator);
 
-	Selector selector;
+	static Selector selector;
 	static SocketChannel connectionClient;
 
 	public static ArrayList<String> level_list = new ArrayList<>();
@@ -55,106 +55,53 @@ public class ClientController implements Runnable {
 			throw new RuntimeException("Не инициализирован hostname и port");
 		}
 		else {
-			while (true) {
+			try {
+				selector = Selector.open();
+				connectionClient = SocketChannel.open();
+				connectionClient.connect(new InetSocketAddress("localhost", port));
+				connectionClient.configureBlocking(false);
+				//connectionClient.register(selector, SelectionKey.OP_CONNECT);
+				connectionClient.register(selector, SelectionKey.OP_WRITE);
+
+				commandInvoker.register("help", new Help(commandReceiver));
+				commandInvoker.register("add", new Add(commandReceiver));
+				commandInvoker.register("info", new Info(commandReceiver));
+				commandInvoker.register("show", new Show(commandReceiver));
+				commandInvoker.register("update", new Update(commandReceiver));
+				commandInvoker.register("remove_by_id", new RemoveByID(commandReceiver));
+				commandInvoker.register("remove_by_description", new RemoveByDescription(commandReceiver));
+				commandInvoker.register("filter_contains_name", new FilterContainsName(commandReceiver));
+				commandInvoker.register("reorder", new Reorder(commandReceiver));
+				commandInvoker.register("clear", new Clear(commandReceiver));
+				commandInvoker.register("exit", new Exit(commandReceiver));
+				commandInvoker.register("remove_greater", new RemoveGreater(commandReceiver));
+				commandInvoker.register("remove_lower", new RemoveLower(commandReceiver));
+				commandInvoker.register("execute_script", new ExecuteScript(commandReceiver));
+
+
+			} catch (ConnectException e) {
+				//System.out.println("Невозможно подключиться к данному хосту или порту");
+				//System.out.println("Возможно сервер временно не доступен или указан неправильный адрес");
+				System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
+				if (reconect_schetchick > 20) {
+					System.exit(0);
+				}
 				try {
 					selector = Selector.open();
 					connectionClient = SocketChannel.open();
-					connectionClient.connect(new InetSocketAddress("localhost", port));
 					connectionClient.configureBlocking(false);
-					//connectionClient.register(selector, SelectionKey.OP_CONNECT);
+					connectionClient.connect(new InetSocketAddress(hostname, port));
 					connectionClient.register(selector, SelectionKey.OP_WRITE);
-
-					commandInvoker.register("help", new Help(commandReceiver));
-					commandInvoker.register("add", new Add(commandReceiver));
-					commandInvoker.register("info", new Info(commandReceiver));
-					commandInvoker.register("show", new Show(commandReceiver));
-					commandInvoker.register("update", new Update(commandReceiver));
-					commandInvoker.register("remove_by_id", new RemoveByID(commandReceiver));
-					commandInvoker.register("remove_by_description", new RemoveByDescription(commandReceiver));
-					commandInvoker.register("filter_contains_name", new FilterContainsName(commandReceiver));
-					commandInvoker.register("reorder", new Reorder(commandReceiver));
-					commandInvoker.register("clear", new Clear(commandReceiver));
-					commandInvoker.register("exit", new Exit(commandReceiver));
-					commandInvoker.register("remove_greater", new RemoveGreater(commandReceiver));
-					commandInvoker.register("remove_lower", new RemoveLower(commandReceiver));
-					commandInvoker.register("execute_script", new ExecuteScript(commandReceiver));
-
-
-					while (true) {
-						selector.select();
-						for (SelectionKey key : selector.selectedKeys()) {
-							//iterator.remove();
-							if (key.isValid()) {
-								client = (SocketChannel) key.channel();
-								if (client != null) {
-									try {
-										if (writeThread(key, selector)) {
-											continue;
-										}
-										if (readThread(key, selector)) {
-											continue;
-										}
-										//noinspection BusyWait
-										sleep(10);
-									} catch (ConnectException e) {
-										System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
-										if (reconect_schetchick > 20) {
-											System.exit(0);
-										}
-										selector = Selector.open();
-										connectionClient = SocketChannel.open();
-										connectionClient.configureBlocking(false);
-										connectionClient.connect(new InetSocketAddress(hostname, port));
-										connectionClient.register(selector, SelectionKey.OP_WRITE);
-										reconect_schetchick++;
-										//noinspection BusyWait
-										sleep(1000);
-									} catch (IOException ex) {
-										System.out.println("Сервер закрыл соединение");
-										System.out.println("Повторное подлючение");
-										//client.register(selector, SelectionKey.OP_CONNECT);
-										//connectionClient.register(selector, SelectionKey.OP_CONNECT);
-										selector = Selector.open();
-										connectionClient = SocketChannel.open();
-										connectionClient.connect(new InetSocketAddress("localhost", port));
-										connectionClient.configureBlocking(false);
-										//connectionClient.register(selector, SelectionKey.OP_CONNECT);
-										connectionClient.register(selector, SelectionKey.OP_WRITE);
-									} catch (NoSuchElementException | InterruptedException e) {
-										System.out.println("Завершение работы.");
-										client.close();
-										e.printStackTrace();
-
-										System.exit(0);
-									}
-								}
-							}
-						}
-					}
-				} catch (ConnectException e) {
-					//System.out.println("Невозможно подключиться к данному хосту или порту");
-					//System.out.println("Возможно сервер временно не доступен или указан неправильный адрес");
-					System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
-					if (reconect_schetchick > 20) {
-						System.exit(0);
-					}
-					try {
-						selector = Selector.open();
-						connectionClient = SocketChannel.open();
-						connectionClient.configureBlocking(false);
-						connectionClient.connect(new InetSocketAddress(hostname, port));
-						connectionClient.register(selector, SelectionKey.OP_WRITE);
-					} catch (IOException ignored) {}
-					reconect_schetchick++;
-					try {
-						//noinspection BusyWait
-						sleep(1000);
-					} catch (InterruptedException ex) {
-						ex.printStackTrace();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (IOException ignored) {}
+				reconect_schetchick++;
+				try {
+					//noinspection BusyWait
+					sleep(1000);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -175,70 +122,111 @@ public class ClientController implements Runnable {
 		client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
 	}
 
-	private static boolean readThread(SelectionKey key, Selector selector) throws IOException, ClassNotFoundException, InterruptedException {
-		if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
-			if (!isAuth) {
-				Message message = getSocketObject();
-				System.out.println(message.getString());
-				message.setUserPass(name, pass);
-				switch (message.getString()) {
-					case "Неправильный пароль":
-						isAuth = false;
-						name = null;
-						pass = null;
-						key.interestOps(SelectionKey.OP_WRITE);
-						client.register(selector, SelectionKey.OP_WRITE);
-						sleep(500);
-						break;
-					case "Успешная авторизация":
-					case "Пользователь зарегистрирован":
-						isAuth = true;
-						System.out.println("Введите help");
-						key.interestOps(SelectionKey.OP_WRITE);
-						client.register(selector, SelectionKey.OP_WRITE);
-						sleep(500);
-						break;
-					case "Пользователь не зарегистрировн, произошла ошибка":
-						key.interestOps(SelectionKey.OP_WRITE);
-						client.register(selector, SelectionKey.OP_WRITE);
-						sleep(500);
-						break;
-				}
-			} else {
-				Message message = getSocketObject();
-				System.out.println(message.getString());
-				key.interestOps(SelectionKey.OP_WRITE);
-				client.register(selector, SelectionKey.OP_WRITE);
-				sleep(500);
+	public static String readThread() throws IOException, ClassNotFoundException, InterruptedException {
+		selector.select();
+		for (SelectionKey key : selector.selectedKeys()) {
+			//iterator.remove();
+			if (key.isValid()) {
+				client = (SocketChannel) key.channel();
+				if (client != null) {
+					try {
+						if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
+							Message message = getSocketObject();
+							System.out.println(message.getString());
+							key.interestOps(SelectionKey.OP_WRITE);
+							client.register(selector, SelectionKey.OP_WRITE);
+							return message.getString();
+						}
 
+						//noinspection BusyWait
+						sleep(10);
+					} catch (ConnectException e) {
+						System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
+						if (reconect_schetchick > 20) {
+							System.exit(0);
+						}
+						selector = Selector.open();
+						connectionClient = SocketChannel.open();
+						connectionClient.configureBlocking(false);
+						connectionClient.connect(new InetSocketAddress(hostname, port));
+						connectionClient.register(selector, SelectionKey.OP_WRITE);
+						reconect_schetchick++;
+						//noinspection BusyWait
+						sleep(1000);
+					} catch (IOException ex) {
+						System.out.println("Сервер закрыл соединение");
+						System.out.println("Повторное подлючение");
+						//client.register(selector, SelectionKey.OP_CONNECT);
+						//connectionClient.register(selector, SelectionKey.OP_CONNECT);
+						selector = Selector.open();
+						connectionClient = SocketChannel.open();
+						connectionClient.connect(new InetSocketAddress("localhost", port));
+						connectionClient.configureBlocking(false);
+						//connectionClient.register(selector, SelectionKey.OP_CONNECT);
+						connectionClient.register(selector, SelectionKey.OP_WRITE);
+					} catch (NoSuchElementException | InterruptedException e) {
+						System.out.println("Завершение работы.");
+						client.close();
+						e.printStackTrace();
+
+						System.exit(0);
+					}
+				}
 			}
-			return true;
 		}
-		return false;
+		return "";
 	}
 
-	private static boolean writeThread(SelectionKey key, Selector selector) throws IOException {
-		if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
-			if (!isAuth) {
-				System.out.println("Укажите имя пользователя:");
-				name = scanner.nextLine().trim();
-				System.out.println("Укажите пароль:");
-				pass = scanner.nextLine().trim();
-				Message message = new Message(new Auth(), name + ":::" + pass);
-				sendSocketObject(message);
-				key.interestOps(SelectionKey.OP_READ);
-				client.register(selector, SelectionKey.OP_READ);
-			} else {
-				System.out.print(">");
-				Message message = commandInvoker.executeCommand(scanner.nextLine().trim().split(" "));
-				if (message != null) {
-					message.setUserPass(ClientController.name, ClientController.pass);
-					sendSocketObject(message);
-					key.interestOps(SelectionKey.OP_READ);
-					client.register(selector, SelectionKey.OP_READ);
+	public static boolean writeThread(Message message) throws IOException {
+		selector.select();
+		for (SelectionKey key : selector.selectedKeys()) {
+			//iterator.remove();
+			if (key.isValid()) {
+				client = (SocketChannel) key.channel();
+				if (client != null) {
+					try {
+						if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
+							if (message != null) {
+								message.setUserPass(ClientController.name, ClientController.pass);
+								sendSocketObject(message);
+								key.interestOps(SelectionKey.OP_READ);
+								client.register(selector, SelectionKey.OP_READ);
+							}
+							return true;
+						}
+						//noinspection BusyWait
+						sleep(10);
+					} catch (ConnectException e) {
+						System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
+						if (reconect_schetchick > 20) {
+							System.exit(0);
+						}
+						selector = Selector.open();
+						connectionClient = SocketChannel.open();
+						connectionClient.configureBlocking(false);
+						connectionClient.connect(new InetSocketAddress(hostname, port));
+						connectionClient.register(selector, SelectionKey.OP_WRITE);
+						reconect_schetchick++;
+					} catch (IOException ex) {
+						System.out.println("Сервер закрыл соединение");
+						System.out.println("Повторное подлючение");
+						//client.register(selector, SelectionKey.OP_CONNECT);
+						//connectionClient.register(selector, SelectionKey.OP_CONNECT);
+						selector = Selector.open();
+						connectionClient = SocketChannel.open();
+						connectionClient.connect(new InetSocketAddress("localhost", port));
+						connectionClient.configureBlocking(false);
+						//connectionClient.register(selector, SelectionKey.OP_CONNECT);
+						connectionClient.register(selector, SelectionKey.OP_WRITE);
+					} catch (NoSuchElementException | InterruptedException e) {
+						System.out.println("Завершение работы.");
+						client.close();
+						e.printStackTrace();
+
+						System.exit(0);
+					}
 				}
 			}
-			return true;
 		}
 		return false;
 	}
