@@ -56,49 +56,51 @@ public class ClientController implements Runnable {
 			System.out.println("Класс не инициализирован");
 			throw new RuntimeException("Не инициализирован hostname и port");
 		} else {
-			try {
-				selector = Selector.open();
-				connectionClient = SocketChannel.open();
-				connectionClient.connect(new InetSocketAddress("localhost", port));
-				connectionClient.configureBlocking(false);
-				//connectionClient.register(selector, SelectionKey.OP_CONNECT);
-				connectionClient.register(selector, SelectionKey.OP_WRITE);
-
-				commandInvoker.register("help", new Help(commandReceiver));
-				commandInvoker.register("add", new Add(commandReceiver));
-				commandInvoker.register("info", new Info(commandReceiver));
-				commandInvoker.register("show", new Show(commandReceiver));
-				commandInvoker.register("update", new Update(commandReceiver));
-				commandInvoker.register("remove_by_id", new RemoveByID(commandReceiver));
-				commandInvoker.register("remove_by_description", new RemoveByDescription(commandReceiver));
-				commandInvoker.register("filter_contains_name", new FilterContainsName(commandReceiver));
-				commandInvoker.register("reorder", new Reorder(commandReceiver));
-				commandInvoker.register("clear", new Clear(commandReceiver));
-				commandInvoker.register("exit", new Exit(commandReceiver));
-				commandInvoker.register("remove_greater", new RemoveGreater(commandReceiver));
-				commandInvoker.register("remove_lower", new RemoveLower(commandReceiver));
-				commandInvoker.register("execute_script", new ExecuteScript(commandReceiver));
-
-
-			} catch (ConnectException e) {
-				//System.out.println("Невозможно подключиться к данному хосту или порту");
-				//System.out.println("Возможно сервер временно не доступен или указан неправильный адрес");
-				System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
-				if (reconect_schetchick > 20) {
-					System.exit(0);
-				}
+			while (true) {
 				try {
 					selector = Selector.open();
 					connectionClient = SocketChannel.open();
+					connectionClient.connect(new InetSocketAddress("localhost", port));
 					connectionClient.configureBlocking(false);
-					connectionClient.connect(new InetSocketAddress(hostname, port));
+					//connectionClient.register(selector, SelectionKey.OP_CONNECT);
 					connectionClient.register(selector, SelectionKey.OP_WRITE);
-				} catch (IOException ignored) {
-				}
-				reconect_schetchick++;
 
-			} catch (Exception e) {
-				e.printStackTrace();
+					commandInvoker.register("help", new Help(commandReceiver));
+					commandInvoker.register("add", new Add(commandReceiver));
+					commandInvoker.register("info", new Info(commandReceiver));
+					commandInvoker.register("show", new Show(commandReceiver));
+					commandInvoker.register("update", new Update(commandReceiver));
+					commandInvoker.register("remove_by_id", new RemoveByID(commandReceiver));
+					commandInvoker.register("remove_by_description", new RemoveByDescription(commandReceiver));
+					commandInvoker.register("filter_contains_name", new FilterContainsName(commandReceiver));
+					commandInvoker.register("reorder", new Reorder(commandReceiver));
+					commandInvoker.register("clear", new Clear(commandReceiver));
+					commandInvoker.register("exit", new Exit(commandReceiver));
+					commandInvoker.register("remove_greater", new RemoveGreater(commandReceiver));
+					commandInvoker.register("remove_lower", new RemoveLower(commandReceiver));
+					commandInvoker.register("execute_script", new ExecuteScript(commandReceiver));
+
+					break;
+				} catch (ConnectException e) {
+					//System.out.println("Невозможно подключиться к данному хосту или порту");
+					//System.out.println("Возможно сервер временно не доступен или указан неправильный адрес");
+					System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
+					if (reconect_schetchick > 20) {
+						System.exit(0);
+					}
+					try {
+						selector = Selector.open();
+						connectionClient = SocketChannel.open();
+						connectionClient.configureBlocking(false);
+						connectionClient.connect(new InetSocketAddress(hostname, port));
+						connectionClient.register(selector, SelectionKey.OP_WRITE);
+					} catch (IOException ignored) {
+					}
+					reconect_schetchick++;
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

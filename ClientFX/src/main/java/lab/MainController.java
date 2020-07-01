@@ -2,7 +2,11 @@ package lab;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,11 +14,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import lab.BasicClasses.MusicBand;
 
 public class MainController {
+    private ObservableList<MusicBand> mbData = FXCollections.observableArrayList();
+
+
+
     @FXML
     private Text name;
 
@@ -49,19 +59,19 @@ public class MainController {
     private Button exit_button;
 
     @FXML
-    private TableView<?> table;
+    private TableView<MusicBand> table = new TableView<>();
 
     @FXML
-    private TableColumn<?, ?> table_id;
+    private TableColumn<MusicBand, Long> table_ids = new TableColumn<>();
 
     @FXML
-    private TableColumn<?, ?> table_name;
+    private TableColumn<MusicBand, String> table_name = new TableColumn<>();
 
     @FXML
-    private TableColumn<?, ?> table_date;
+    private TableColumn<MusicBand, LocalDateTime> table_date = new TableColumn<>();
 
     @FXML
-    private TableColumn<?, ?> table_description;
+    private TableColumn<MusicBand, String> table_description = new TableColumn<>();
 
 
     private double xOffSet;
@@ -97,8 +107,34 @@ public class MainController {
         }
     }
 
+    void updateTable(){
+        /*
+        for(MusicBand musicBand : ClientController.data){
+            (musicBand.getID(), musicBand.getName(), musicBand.getCreationDate(), musicBand.getDescription());
+        }
+
+         */
+        //noinspection unchecked
+        table.getColumns().removeAll();
+
+        //noinspection unchecked
+        table.getColumns().addAll(table_ids, table_name, table_date, table_description);
+    }
+
     @FXML
     void initialize() {
+
         name.setText(ClientController.name);
+
+        // устанавливаем тип и значение которое должно хранится в колонке
+        table_ids.setCellValueFactory(new PropertyValueFactory<>("ID"));
+        table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        table_date.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
+        table_description.setCellValueFactory(new PropertyValueFactory<>("description"));
+        mbData.addAll(ClientController.data);
+        table.setItems(mbData);
+        for (MusicBand musicBand : ClientController.data){
+            System.out.println(musicBand.getID());
+        }
     }
 }
