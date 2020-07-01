@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -23,7 +24,7 @@ import lab.BasicClasses.MusicBand;
 public class MainController {
     private ObservableList<MusicBand> mbData = FXCollections.observableArrayList();
 
-
+    private Long id;
 
     @FXML
     private Text name;
@@ -57,6 +58,48 @@ public class MainController {
 
     @FXML
     private Button exit_button;
+
+    @FXML
+    private TextField name_field;
+
+    @FXML
+    private TextField x_field;
+
+    @FXML
+    private TextField y_field;
+
+    @FXML
+    private TextField genre_field;
+
+    @FXML
+    private TextField album_name_field;
+
+    @FXML
+    private TextField album_tracks_field;
+
+    @FXML
+    private TextField album_length_field;
+
+    @FXML
+    private TextField album_sales_field;
+
+    @FXML
+    private TextField np_field;
+
+    @FXML
+    private TextField description_field;
+
+    @FXML
+    private TextField date_field;
+
+    @FXML
+    private Button add_button;
+
+    @FXML
+    private Button update_button;
+
+    @FXML
+    private Button del_button;
 
     @FXML
     private TableView<MusicBand> table = new TableView<>();
@@ -107,19 +150,26 @@ public class MainController {
         }
     }
 
-    void updateTable(){
-        /*
-        for(MusicBand musicBand : ClientController.data){
-            (musicBand.getID(), musicBand.getName(), musicBand.getCreationDate(), musicBand.getDescription());
-        }
-
-         */
-        //noinspection unchecked
-        table.getColumns().removeAll();
-
-        //noinspection unchecked
-        table.getColumns().addAll(table_ids, table_name, table_date, table_description);
+    @FXML
+    void update_fields(){
+        MusicBand musicBand = table.getSelectionModel().getSelectedItem();
+        id = musicBand.getID();
+        name_field.setText(musicBand.getName());
+        x_field.setText(String.valueOf(musicBand.getCoordinates().getX()));
+        y_field.setText(String.valueOf(musicBand.getCoordinates().getY()));
+        genre_field.setText(String.valueOf(musicBand.getGenre()));
+        album_name_field.setText(musicBand.getBestAlbum().getName());
+        album_tracks_field.setText(String.valueOf(musicBand.getBestAlbum().getTracks()));
+        album_length_field.setText(String.valueOf(musicBand.getBestAlbum().getLength()));
+        album_sales_field.setText(String.valueOf(musicBand.getBestAlbum().getSales()));
+        np_field.setText(String.valueOf(musicBand.getNumberOfParticipants()));
+        description_field.setText(musicBand.getDescription());
+        date_field.setText(String.valueOf(musicBand.getCreationDate()));
+        del_button.setDisable(false);
+        update_button.setDisable(false);
     }
+
+
 
     @FXML
     void initialize() {

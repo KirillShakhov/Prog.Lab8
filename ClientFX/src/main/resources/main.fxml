@@ -23,7 +23,7 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="660.0" prefWidth="430.0">
                            <children>
-                              <TableView fx:id="table" prefHeight="431.0" prefWidth="432.0" style="-fx-background-color: #ddfff8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="table" onMouseClicked="#update_fields" prefHeight="431.0" prefWidth="432.0" style="-fx-background-color: #ddfff8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                                 <columns>
                                     <TableColumn fx:id="table_ids" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" style="-fx-background-color: #47e5c8;" text="ID" />
                                   <TableColumn fx:id="table_name" editable="false" prefWidth="117.0" resizable="false" style="-fx-background-color: #47e5c8;" text="NAME" />
@@ -37,78 +37,73 @@
                   </ScrollPane>
                   <AnchorPane layoutX="-2.0" prefHeight="431.0" prefWidth="310.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button fx:id="register_button1" layoutX="14.0" layoutY="303.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="276.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ADD">
+                        <Button fx:id="add_button" layoutX="14.0" layoutY="303.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ADD">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </Button>
-                        <Button fx:id="register_button11" layoutX="14.0" layoutY="343.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="228.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="UPDATE">
+                        <Button fx:id="update_button" disable="true" layoutX="14.0" layoutY="343.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="UPDATE">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </Button>
-                        <TextField alignment="CENTER" layoutX="247.0" layoutY="342.0" prefHeight="36.0" prefWidth="43.0" promptText="ID" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
-                           <font>
-                              <Font name="Arial Italic" size="17.0" />
-                           </font>
-                        </TextField>
-                        <Button fx:id="register_button12" layoutX="14.0" layoutY="384.0" mnemonicParsing="false" opacity="0.7" prefHeight="34.0" prefWidth="276.0" style="-fx-background-color: #ff0000; -fx-background-radius: 10;" text="DEL" textFill="WHITE">
+                        <Button fx:id="del_button" disable="true" layoutX="14.0" layoutY="384.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ff0000; -fx-background-radius: 10;" text="DEL" textFill="WHITE">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </Button>
                         <Circle fill="DODGERBLUE" layoutX="247.0" layoutY="54.0" radius="41.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="13.0" />
-                        <TextField alignment="CENTER" layoutX="13.0" layoutY="13.0" prefHeight="36.0" prefWidth="162.0" promptText="NAME" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="name_field" alignment="CENTER" layoutX="13.0" layoutY="13.0" prefHeight="36.0" prefWidth="162.0" promptText="NAME" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="13.0" layoutY="58.0" prefHeight="36.0" prefWidth="43.0" promptText="X" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField alignment="CENTER" layoutX="13.0" layoutY="58.0" prefHeight="36.0" prefWidth="75.0" promptText="X" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" fx:id="x_field">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="62.0" layoutY="58.0" prefHeight="36.0" prefWidth="43.0" promptText="Y" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="y_field" alignment="CENTER" layoutX="100.0" layoutY="58.0" prefHeight="36.0" prefWidth="75.0" promptText="Y" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="13.0" layoutY="103.0" prefHeight="36.0" prefWidth="134.0" promptText="GANRE" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="genre_field" alignment="CENTER" layoutX="13.0" layoutY="103.0" prefHeight="36.0" prefWidth="134.0" promptText="GENRE" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="13.0" layoutY="148.0" prefHeight="22.0" prefWidth="134.0" promptText="ALBUM NAME" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="album_name_field" alignment="CENTER" layoutX="13.0" layoutY="148.0" prefHeight="22.0" prefWidth="134.0" promptText="ALBUM NAME" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="14.0" layoutY="185.0" prefHeight="22.0" prefWidth="134.0" promptText="TRACKS" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="album_tracks_field" alignment="CENTER" layoutX="14.0" layoutY="185.0" prefHeight="22.0" prefWidth="134.0" promptText="TRACKS" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="14.0" layoutY="222.0" prefHeight="22.0" prefWidth="134.0" promptText="LENGTH" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="album_length_field" alignment="CENTER" layoutX="14.0" layoutY="222.0" prefHeight="22.0" prefWidth="134.0" promptText="LENGTH" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="15.0" layoutY="259.0" prefHeight="22.0" prefWidth="134.0" promptText="SALES" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="album_sales_field" alignment="CENTER" layoutX="15.0" layoutY="259.0" prefHeight="22.0" prefWidth="134.0" promptText="SALES" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="158.0" layoutY="103.0" prefHeight="36.0" prefWidth="134.0" promptText="NUMBER_P" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="np_field" alignment="CENTER" layoutX="158.0" layoutY="103.0" prefHeight="36.0" prefWidth="134.0" promptText="NUMBER_P" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="158.0" layoutY="184.0" prefHeight="73.0" prefWidth="134.0" promptText="DESCRIPTION" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="description_field" alignment="CENTER" layoutX="158.0" layoutY="184.0" prefHeight="73.0" prefWidth="134.0" promptText="DESCRIPTION" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="16.0" />
                            </font>
                         </TextField>
-                        <TextField alignment="CENTER" layoutX="158.0" layoutY="148.0" prefHeight="22.0" prefWidth="134.0" promptText="DATE" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                        <TextField fx:id="date_field" alignment="CENTER" layoutX="158.0" layoutY="148.0" prefHeight="22.0" prefWidth="134.0" promptText="DATE" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
