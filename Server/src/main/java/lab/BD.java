@@ -610,4 +610,7 @@ public class BD {
         return false;
     }
 
+    public static ArrayList<MusicBand> getData() {
+        return data;
+    }
 }

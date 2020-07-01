@@ -1,5 +1,6 @@
 package lab;
 
+import lab.BasicClasses.MusicBand;
 import lab.Commands.CommandInvoker;
 import lab.Commands.CommandReceiver;
 import lab.Commands.ConcreteCommands.*;
@@ -40,6 +41,9 @@ public class ClientController implements Runnable {
 	static SocketChannel connectionClient;
 
 	public static ArrayList<String> level_list = new ArrayList<>();
+
+	public static ArrayList<MusicBand> data = new ArrayList<>();
+
 
 
 	public ClientController(String hostname, String port) {
@@ -125,6 +129,7 @@ public class ClientController implements Runnable {
 					try {
 						if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
 							Message message = getSocketObject();
+							data = message.getArralist();
 							System.out.println(message.getString());
 							key.interestOps(SelectionKey.OP_WRITE);
 							client.register(selector, SelectionKey.OP_WRITE);

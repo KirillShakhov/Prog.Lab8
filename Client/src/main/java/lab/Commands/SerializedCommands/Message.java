@@ -16,15 +16,10 @@ public class Message implements Serializable {
     private MusicBand musicBand;
     private String user_name;
     private String pass;
-    private ArrayList<MusicBand> data;
+    private ArrayList<MusicBand> arralist;
 
     public Message(String string) {
         this.string = string;
-    }
-
-    public Message(String string, ArrayList<MusicBand> data) {
-        this.string = string;
-        this.data = data;
     }
 
     public Message(SocketChannel socketChannel, String string) {
@@ -51,6 +46,14 @@ public class Message implements Serializable {
     public Message(Command command, MusicBand musicBand) {
         this.command = command;
         this.musicBand = musicBand;
+    }
+
+    public void setArralist(ArrayList<MusicBand> arralist) {
+        this.arralist = arralist;
+    }
+
+    public ArrayList<MusicBand> getArralist() {
+        return arralist;
     }
 
     public void setUserPass(String name, String pass){
@@ -104,9 +107,5 @@ public class Message implements Serializable {
 
     public void setArgs(String args) {
         this.args = args;
-    }
-
-    public ArrayList<MusicBand> getData() {
-        return data;
     }
 }

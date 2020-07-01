@@ -5,6 +5,7 @@ import lab.Commands.Command;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 
 public class Message implements Serializable {
     private static final long serialVersionUID = 34L;
@@ -15,6 +16,7 @@ public class Message implements Serializable {
     private MusicBand musicBand;
     private String user_name;
     private String pass;
+    private ArrayList<MusicBand> arralist;
 
     public Message(String string) {
         this.string = string;
@@ -44,6 +46,14 @@ public class Message implements Serializable {
     public Message(Command command, MusicBand musicBand) {
         this.command = command;
         this.musicBand = musicBand;
+    }
+
+    public void setArralist(ArrayList<MusicBand> arralist) {
+        this.arralist = arralist;
+    }
+
+    public ArrayList<MusicBand> getArralist() {
+        return arralist;
     }
 
     public void setUserPass(String name, String pass){
