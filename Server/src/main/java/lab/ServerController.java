@@ -83,12 +83,14 @@ public class ServerController implements Runnable {
 	}
 
 	public static Message getSocketObjet(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
+		System.out.println("ожидаем сообщение");
 		ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
 		socketChannel.read(data);
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data.array());
 		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 		Message message = (Message)objectInputStream.readObject();
 		message.setSocketChannel(socketChannel);
+		System.out.println("получено сообщение");
 		return message;
 	}
 

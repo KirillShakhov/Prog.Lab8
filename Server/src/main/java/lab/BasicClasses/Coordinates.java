@@ -3,6 +3,7 @@ package lab.BasicClasses;
 import java.io.Serializable;
 
 public class Coordinates implements Comparable<Coordinates>, Serializable {
+    private static final long serialVersionUID = 34L;
     private double x; //Значение поля должно быть больше -687
     private Float y; //Поле не может быть null
     public Coordinates(double x, Float y){

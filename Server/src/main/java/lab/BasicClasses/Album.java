@@ -3,6 +3,7 @@ package lab.BasicClasses;
 import java.io.Serializable;
 
 public class Album implements Comparable<Album>, Serializable {
+    private static final long serialVersionUID = 34L;
     private String name; //Поле не может быть null, Строка не может быть пустой
     private int tracks; //Значение поля должно быть больше 0
     private Integer length; //Поле не может быть null, Значение поля должно быть больше 0
