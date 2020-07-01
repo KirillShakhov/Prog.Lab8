@@ -42,19 +42,16 @@ public class ClientController implements Runnable {
 	public static ArrayList<String> level_list = new ArrayList<>();
 
 
-
-
 	public ClientController(String hostname, String port) {
 		ClientController.hostname = hostname;
 		ClientController.port = Integer.parseInt(port);
 	}
 
 	public void run() {
-		if(hostname == null || port == -1){
+		if (hostname == null || port == -1) {
 			System.out.println("Класс не инициализирован");
 			throw new RuntimeException("Не инициализирован hostname и port");
-		}
-		else {
+		} else {
 			try {
 				selector = Selector.open();
 				connectionClient = SocketChannel.open();
@@ -92,14 +89,10 @@ public class ClientController implements Runnable {
 					connectionClient.configureBlocking(false);
 					connectionClient.connect(new InetSocketAddress(hostname, port));
 					connectionClient.register(selector, SelectionKey.OP_WRITE);
-				} catch (IOException ignored) {}
-				reconect_schetchick++;
-				try {
-					//noinspection BusyWait
-					sleep(1000);
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+				} catch (IOException ignored) {
 				}
+				reconect_schetchick++;
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -122,7 +115,7 @@ public class ClientController implements Runnable {
 		client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
 	}
 
-	public static String readThread() throws IOException, ClassNotFoundException, InterruptedException {
+	public static String readThread() throws IOException, ClassNotFoundException {
 		selector.select();
 		for (SelectionKey key : selector.selectedKeys()) {
 			//iterator.remove();
@@ -138,8 +131,6 @@ public class ClientController implements Runnable {
 							return message.getString();
 						}
 
-						//noinspection BusyWait
-						sleep(10);
 					} catch (ConnectException e) {
 						System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
 						if (reconect_schetchick > 20) {
@@ -151,8 +142,6 @@ public class ClientController implements Runnable {
 						connectionClient.connect(new InetSocketAddress(hostname, port));
 						connectionClient.register(selector, SelectionKey.OP_WRITE);
 						reconect_schetchick++;
-						//noinspection BusyWait
-						sleep(1000);
 					} catch (IOException ex) {
 						System.out.println("Сервер закрыл соединение");
 						System.out.println("Повторное подлючение");
@@ -164,7 +153,7 @@ public class ClientController implements Runnable {
 						connectionClient.configureBlocking(false);
 						//connectionClient.register(selector, SelectionKey.OP_CONNECT);
 						connectionClient.register(selector, SelectionKey.OP_WRITE);
-					} catch (NoSuchElementException | InterruptedException e) {
+					} catch (NoSuchElementException e) {
 						System.out.println("Завершение работы.");
 						client.close();
 						e.printStackTrace();
@@ -194,8 +183,6 @@ public class ClientController implements Runnable {
 							}
 							return true;
 						}
-						//noinspection BusyWait
-						sleep(10);
 					} catch (ConnectException e) {
 						System.out.println("В данный момент сервер не доступен, повторная попытка: " + reconect_schetchick);
 						if (reconect_schetchick > 20) {
@@ -218,7 +205,7 @@ public class ClientController implements Runnable {
 						connectionClient.configureBlocking(false);
 						//connectionClient.register(selector, SelectionKey.OP_CONNECT);
 						connectionClient.register(selector, SelectionKey.OP_WRITE);
-					} catch (NoSuchElementException | InterruptedException e) {
+					} catch (NoSuchElementException e) {
 						System.out.println("Завершение работы.");
 						client.close();
 						e.printStackTrace();
@@ -268,5 +255,19 @@ public class ClientController implements Runnable {
 			}
 		}
 		return false;
+	}
+
+	public static String fastWrite(Message message) {
+		String result = "";
+		try {
+			if (writeThread(message)) {
+				result = readThread();
+			} else {
+				result = "сообщение не отправлено";
+			}
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

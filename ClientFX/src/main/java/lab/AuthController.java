@@ -18,8 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 import static java.lang.Thread.sleep;
-import static lab.ClientController.readThread;
-import static lab.ClientController.writeThread;
+import static lab.ClientController.*;
 
 public class AuthController {
 
@@ -75,17 +74,8 @@ public class AuthController {
 
     @FXML
     void login(MouseEvent event) {
-        String result = "";
-        Message message = new Message(new Auth(), login_name_field.getText() + ":::" + login_pass_field.getText());
-        try {
-            if(writeThread(message)) {
-                result = readThread();
-            }else {
-                result = "сообщение не отправлено";
-            }
-        } catch (IOException | ClassNotFoundException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        String result = fastWrite(new Message(new Auth(), login_name_field.getText() + ":::" + login_pass_field.getText()));
+
 
         if(result.equals("Пользователь не найден")){
             login_name_error.setVisible(true);
@@ -136,17 +126,8 @@ public class AuthController {
         }
         else{
             register_pass_error.setVisible(false);
-            String result = "";
-            Message message = new Message(new Register(), register_name_field.getText() + ":::" + register_pass_field.getText());
-            try {
-                if(writeThread(message)) {
-                    result = readThread();
-                }else {
-                    result = "сообщение не отправлено";
-                }
-            } catch (IOException | ClassNotFoundException | InterruptedException e) {
-                e.printStackTrace();
-            }
+            String result = fastWrite(new Message(new Register(), register_name_field.getText() + ":::" + register_pass_field.getText()));
+
             if(result.equals("Имя пользователя занято")){
                 register_name_error.setVisible(true);
                 register_pass_error.setVisible(false);
