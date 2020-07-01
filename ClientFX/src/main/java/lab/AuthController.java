@@ -71,6 +71,9 @@ public class AuthController {
     private Button exit_button;
 
     @FXML
+    private Text version_text;
+
+    @FXML
     void exit(MouseEvent event) {
         System.exit(0);
     }
@@ -162,6 +165,6 @@ public class AuthController {
 
     @FXML
     void initialize() {
-
+        version_text.setText(String.valueOf(Main.version));
     }
 }

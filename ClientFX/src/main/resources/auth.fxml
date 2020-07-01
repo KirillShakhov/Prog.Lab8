@@ -58,7 +58,7 @@
             <Font name="Arial" size="30.0" />
          </font>
       </Text>
-      <Text fill="#747474" layoutX="133.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1.0" wrappingWidth="22.136703491210938">
+      <Text fx:id="version_text" fill="#747474" layoutX="133.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1.0" wrappingWidth="22.136703491210938">
          <font>
             <Font name="Arial Bold" size="10.0" />
          </font>

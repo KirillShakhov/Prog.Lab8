@@ -103,7 +103,9 @@ public class CommandReceiver {
                         return "Команда remove не выполнена.";
                     }
                 }
-                return "Элемент с ID " + groupId + " успешно удален из коллекции.";
+                else{
+                    return "Вы не являетесь владельцем объекта";
+                }
             } else {
                 return "Элемента с таким ID нет в коллекции.";
             }
