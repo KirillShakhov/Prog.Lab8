@@ -16,7 +16,7 @@ public class Message implements Serializable {
     private MusicBand musicBand;
     private String user_name;
     private String pass;
-    private ArrayList<MusicBand> arralist;
+    private ArrayList<MusicBand> arraylist;
 
     public Message(String string) {
         this.string = string;
@@ -48,12 +48,12 @@ public class Message implements Serializable {
         this.musicBand = musicBand;
     }
 
-    public void setArralist(ArrayList<MusicBand> arralist) {
-        this.arralist = arralist;
+    public ArrayList<MusicBand> getArraylist() {
+        return arraylist;
     }
 
-    public ArrayList<MusicBand> getArralist() {
-        return arralist;
+    public void setArraylist(ArrayList<MusicBand> arraylist) {
+        this.arraylist = arraylist;
     }
 
     public void setUserPass(String name, String pass){

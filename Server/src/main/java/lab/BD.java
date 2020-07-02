@@ -154,7 +154,7 @@ public class BD {
      *
      * @return возвращает успешность выполнения метода. true - успех, false - исключение
      * */
-    public static boolean update(MusicBand musicBand, Integer id){
+    public static boolean update(MusicBand musicBand, Long id){
         try{
             //TODO проверить
             String name = musicBand.getName();
@@ -205,11 +205,11 @@ public class BD {
             statement.setInt(10, Integer.parseInt(album_tracks));
             statement.setInt(11, Integer.parseInt(album_lenght));
             statement.setInt(12, Integer.parseInt(album_sales));
-            statement.setInt(13, id);
+            statement.setLong(13, id);
 
             int numberOfUpdatedRows = statement.executeUpdate();
             //connection.commit();
-            data.set(id, musicBand);
+            data.set(Math.toIntExact(id), musicBand);
             return true;
         }
         catch (Exception e){
@@ -419,7 +419,7 @@ public class BD {
      *
      * @return возвращает успешность выполнения метода. true - успех, false - исключение.
      * */
-    public static boolean remove(int id) {
+    public static boolean remove(Long id) {
         try {
             Statement stmt = connection.createStatement();
             String sql = String.format("DELETE from DATA_BD where ID=%d;", id);
@@ -465,8 +465,8 @@ public class BD {
      *
      * @return Объект MusicBand.
      * */
-    public static MusicBand get(int id){
-        return data.get(id);
+    public static MusicBand get(Long id){
+        return data.get(Math.toIntExact(id));
     }
     /** Метод, позволяет получить количество элементов в коллекции.
      *
@@ -488,7 +488,7 @@ public class BD {
         }
     }
 
-    public static boolean checkExist(Integer groupId) {
+    public static boolean checkExist(Long groupId) {
         for (MusicBand musicBand:data) {
             if (musicBand.getID() == groupId) {
                 return true;

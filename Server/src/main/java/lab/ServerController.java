@@ -132,7 +132,7 @@ public class ServerController implements Runnable {
 				incomingMessages.remove(mes);
 			}
 			Message message = new Message(result);
-			message.setArralist(BD.getData());
+			message.setArraylist(BD.getData());
 			sendSocketObject(channel, message);
 			channel.register(selector, SelectionKey.OP_READ);
 			return true;

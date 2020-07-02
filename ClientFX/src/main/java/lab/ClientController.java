@@ -131,7 +131,7 @@ public class ClientController implements Runnable {
 					try {
 						if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
 							Message message = getSocketObject();
-							data = message.getArralist();
+							data = message.getArraylist();
 							System.out.println(message.getString());
 							key.interestOps(SelectionKey.OP_WRITE);
 							client.register(selector, SelectionKey.OP_WRITE);

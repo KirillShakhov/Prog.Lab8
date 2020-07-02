@@ -98,7 +98,7 @@ public class AuthController {
                 login_pass_error.setVisible(false);
                 //login_button.getScene().getWindow().hide();
                 try {
-                    Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/mainLight.fxml"));
                     Main.stage.setScene(new Scene(root));
                     Main.stage.show();
                 } catch (IOException e) {

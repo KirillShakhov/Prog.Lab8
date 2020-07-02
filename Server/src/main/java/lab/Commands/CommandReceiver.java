@@ -4,6 +4,7 @@ package lab.Commands;
 import lab.BD;
 import lab.BasicClasses.Album;
 import lab.BasicClasses.MusicBand;
+import lab.BasicClasses.MusicGenre;
 import lab.BasicClasses.User;
 import lab.Commands.SerializedCommands.Message;
 import lab.Utils.Validator;
@@ -29,7 +30,7 @@ public class CommandReceiver {
         BD.sort();
         StringBuilder result = new StringBuilder();
         if(BD.size() != 0) {
-            for (int i = 0; i < BD.size(); i++) {
+            for (long i = 0L; i < BD.size(); i++) {
                 result.append(BD.get(i).toString()).append("\n");
             }
         }
@@ -59,13 +60,13 @@ public class CommandReceiver {
      *
      */
     public String update(Message mes) {
-        int groupId;
+        Long groupId;
         try {
-            groupId = Integer.parseInt(mes.getArgs());
+            groupId = Long.parseLong(mes.getArgs());
             if (BD.checkExist(groupId)) {
                 if (Validator.validateMusicBand(mes.getMusicBand())) {
                     MusicBand o = mes.getMusicBand();
-                    o.setID((long)groupId);
+                    o.setID(groupId);
                     o.setCreationDate(LocalDateTime.now());
                     if(BD.get(groupId).getUser_creator().equals(o.getUser_creator())) {
                         if(BD.update(o, groupId)) {
@@ -92,20 +93,25 @@ public class CommandReceiver {
      * @param ID - удаление по ID.
      */
     public String removeById(String ID, String name) {
-        int groupId;
+        long groupId;
         try {
-            groupId = Integer.parseInt(ID);
+            groupId = Long.parseLong(ID);
             if (BD.checkExist(groupId)) {
-                if(BD.get(groupId).getUser_creator().equals(name)) {
-                    if(BD.remove(groupId)) {
-                        return "Объект удален.";
-                    }else{
-                        return "Команда remove не выполнена.";
+                for(MusicBand musicBand : BD.getData()){
+                    if(musicBand.getID() == groupId){
+                        if(musicBand.getUser_creator().equals(name)) {
+                            if(BD.remove(groupId)) {
+                                return "Объект удален";
+                            }else{
+                                return "Команда remove не выполнена.";
+                            }
+                        }
+                        else{
+                            return "Вы не являетесь владельцем объекта";
+                        }
                     }
                 }
-                else{
-                    return "Вы не являетесь владельцем объекта";
-                }
+                return "Элемента с таким ID нет в коллекции.";
             } else {
                 return "Элемента с таким ID нет в коллекции.";
             }
@@ -116,7 +122,7 @@ public class CommandReceiver {
 
     public String removeByDescription(String description, String name) {
         int j = 0;
-        for(int i = 0; i < BD.size(); i++){
+        for(Long i = 0L; i < BD.size(); i++){
             if(BD.get(i).getDescription().equals(description)){
                 if(BD.get(i).getUser_creator().equals(name)) {
                     if(BD.remove(i)) {
@@ -153,7 +159,7 @@ public class CommandReceiver {
     public String  filterContainsName(String arg) {
         StringBuilder result = new StringBuilder();
         int j = 0;
-        for (int i = 0; i < BD.size(); i++) {
+        for (Long i = 0L; i < BD.size(); i++) {
             if (BD.get(i).getName().contains(arg)) {
                 result.append(BD.get(i).toString()).append("\n");
                 j++;
@@ -167,7 +173,7 @@ public class CommandReceiver {
     public String countGreaterThanBestAlbum(Album musicBand) {
         String result = "";
         int j = 0;
-        for(int i = 0; i < BD.size(); i++){
+        for(long i = 0L; i < BD.size(); i++){
             if(BD.get(i).getSales() > musicBand.getSales()){ j++; }
         }
         if (j != 0) {

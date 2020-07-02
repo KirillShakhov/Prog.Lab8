@@ -21,7 +21,7 @@ import java.util.Date;
  */
 public class ElementCreator {
 
-    public MusicBand createMusicBand() {
+    public static MusicBand createMusicBand() {
         String name = StringReader.read("Введите имя группы: ", false);
         double x = PrimitiveDoubleReader.read("Введите X: ", -687, "MIN");
         Float y = PrimitiveFloatReader.read("Введите Y: ", 0, "NULL");
@@ -49,7 +49,7 @@ public class ElementCreator {
         return new MusicBand(0L , name, new Coordinates(x, y), LocalDateTime.now(), numberOfParticipants, description, establishmentDate, genre, createAlbum(), ClientController.name);
     }
 
-    public Album createAlbum() {
+    public static Album createAlbum() {
         String name_album = StringReader.read("Введите имя альбома: ", false);
         int tracks = PrimitiveIntReader.read("Введите количество треков: ", 0, "MIN");
         Integer length = RefIntReader.read("Введите длину альбома: ", false, 0, "MIN");
@@ -85,7 +85,7 @@ public class ElementCreator {
         return null;
     }
 
-    private boolean validateArrayMusicBand(ArrayList<String> parameters) {
+    private static boolean validateArrayMusicBand(ArrayList<String> parameters) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             return (!parameters.get(0).isEmpty()

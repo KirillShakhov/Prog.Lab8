@@ -14,11 +14,17 @@ public class Main extends Application{
     public static Stage stage;
     public static Stage stage_error = null;
     public static ClientController clientController;
+
+
     public static final double version = 0.1;
+    public static final String host = "127.0.0.1";
+    public static final String port = "3030";
+
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getResource("/auth.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/authLight.fxml"));
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setScene(new Scene(root));
 //        primaryStage.setMaxWidth(820);
@@ -57,7 +63,7 @@ public class Main extends Application{
 
 
     public static void main(String[] args) {
-        ClientController clientController = new ClientController("127.0.0.1", "3030");
+        ClientController clientController = new ClientController(host, port);
         clientController.run();
         launch(args);
     }
