@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -15,29 +14,25 @@
 
 <!--suppress ALL -->
 
-<AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lab.MainController">
+<AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lab.Controllers.MainController">
    <children>
       <AnchorPane layoutY="62.0" prefHeight="537.0" prefWidth="800.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
          <children>
             <AnchorPane layoutX="433.0" layoutY="50.0" maxHeight="500.0" maxWidth="717.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="717.0" style="-fx-background-color: #93EFDE#93EFDE; -fx-background-radius: 10;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                <children>
-                  <ScrollPane layoutX="311.0" prefHeight="431.0" prefWidth="449.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="660.0" prefWidth="430.0">
-                           <children>
-                              <TableView fx:id="table" onMouseClicked="#update_fields" prefHeight="431.0" prefWidth="432.0" style="-fx-background-color: #ddfff8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
-                                <columns>
-                                    <TableColumn fx:id="table_ids" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" style="-fx-background-color: #47e5c8;" text="ID" />
-                                  <TableColumn fx:id="table_name" editable="false" prefWidth="76.0" resizable="false" style="-fx-background-color: #47e5c8;" text="NAME" />
-                                    <TableColumn fx:id="table_date" editable="false" prefWidth="103.0" resizable="false" style="-fx-background-color: #47e5c8;" text="CR_DATE" />
-                                    <TableColumn fx:id="table_description" editable="false" prefWidth="109.0" resizable="false" style="-fx-background-color: #47e5c8;" text="DESCRIPTION" />
-                                    <TableColumn fx:id="table_user" editable="false" prefWidth="82.0" resizable="false" style="-fx-background-color: #47e5c8;" text="USER" />
-                                </columns>
-                              </TableView>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </ScrollPane>
+                  <AnchorPane layoutX="316.0" layoutY="14.0" minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="430.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+                     <children>
+                        <TableView fx:id="table" onMouseClicked="#update_fields" prefHeight="431.0" prefWidth="432.0" style="-fx-background-color: #ddfff8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn fx:id="table_ids" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" style="-fx-background-color: #47e5c8;" text="ID" />
+                              <TableColumn fx:id="table_name" editable="false" prefWidth="76.0" resizable="false" style="-fx-background-color: #47e5c8;" text="NAME" />
+                              <TableColumn fx:id="table_date" editable="false" prefWidth="103.0" resizable="false" style="-fx-background-color: #47e5c8;" text="CR_DATE" />
+                              <TableColumn fx:id="table_description" editable="false" prefWidth="109.0" resizable="false" style="-fx-background-color: #47e5c8;" text="DESCRIPTION" />
+                              <TableColumn fx:id="table_user" editable="false" prefWidth="82.0" resizable="false" style="-fx-background-color: #47e5c8;" text="USER" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
                   <AnchorPane layoutX="-2.0" prefHeight="431.0" prefWidth="310.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Button fx:id="add_button" disable="true" layoutX="14.0" layoutY="303.0" mnemonicParsing="false" onMouseClicked="#add" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ADD">
@@ -188,7 +183,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="leave_button" layoutX="743.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#leave" opacity="0.88" prefHeight="34.0" prefWidth="11.0" style="-fx-background-color: #ff0000; -fx-background-radius: 5;" text="&gt;" textAlignment="CENTER" textFill="WHITE" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="14.0">
+      <Button fx:id="leave_button" layoutX="743.0" layoutY="32.0" mnemonicParsing="false" onMouseClicked="#leave" opacity="0.88" prefHeight="34.0" prefWidth="21.0" style="-fx-background-color: #ff0000; -fx-background-radius: 5;" text="&gt;" textAlignment="CENTER" textFill="WHITE" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="14.0">
          <font>
             <Font size="10.0" />
          </font>

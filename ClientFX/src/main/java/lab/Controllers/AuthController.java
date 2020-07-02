@@ -1,9 +1,11 @@
-package lab;
+package lab.Controllers;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.scene.control.PasswordField;
+import lab.ClientController;
 import lab.Commands.ConcreteCommands.Auth;
 import lab.Commands.ConcreteCommands.Register;
 import lab.Commands.SerializedCommands.Message;
@@ -16,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import lab.Main;
 
 import static java.lang.Thread.sleep;
 import static lab.ClientController.*;
@@ -34,14 +37,15 @@ public class AuthController {
     @FXML
     private TextField register_name_field;
 
-    @FXML
-    private TextField register_pass2_field;
 
     @FXML
     private Button register_button;
 
     @FXML
-    private TextField register_pass_field;
+    private PasswordField register_pass2_field;
+
+    @FXML
+    private PasswordField register_pass_field;
 
     @FXML
     private Text register_pass_error;
@@ -59,7 +63,7 @@ public class AuthController {
     private Button login_button;
 
     @FXML
-    private TextField login_pass_field;
+    private PasswordField login_pass_field;
 
     @FXML
     private Text login_pass_error;
@@ -149,7 +153,7 @@ public class AuthController {
                 ClientController.name = register_name_field.getText();
                 ClientController.pass = register_pass_field.getText();
                 try {
-                    Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/mainLight.fxml"));
                     Main.stage.setScene(new Scene(root));
                     Main.stage.show();
                 } catch (IOException e) {

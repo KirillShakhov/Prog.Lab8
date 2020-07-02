@@ -1,10 +1,9 @@
-package lab;
+package lab.Controllers;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,17 +22,16 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import lab.BasicClasses.Album;
 import lab.BasicClasses.Coordinates;
 import lab.BasicClasses.MusicBand;
 import lab.BasicClasses.MusicGenre;
+import lab.ClientController;
 import lab.Commands.ConcreteCommands.Add;
 import lab.Commands.ConcreteCommands.RemoveByID;
-import lab.Commands.ConcreteCommands.Show;
 import lab.Commands.SerializedCommands.Message;
-import lab.Commands.Utils.Creaters.ElementCreator;
 import lab.Commands.Utils.Readers.EnumReaders.GenreReader;
+import lab.Main;
 
 import static lab.ClientController.fastWrite;
 import static lab.Main.error_windows;
@@ -164,7 +162,6 @@ public class MainController {
 
     private double xOffSet;
     private double yOffSet;
-
     @FXML
     void makeDragable(MouseEvent event) {
         parent.setOnMousePressed(events -> {
@@ -272,8 +269,11 @@ public class MainController {
                 error_windows(result);
             }
             del_button.setVisible(true);
+            del_button.setDisable(true);
+            update_button.setDisable(true);
             del_yes_button.setVisible(false);
             del_no_button.setVisible(false);
+            id = null;
         }
         else{
             error_windows("Вы не выбрали объект");
@@ -363,6 +363,7 @@ public class MainController {
             viewError("Что-то пошло не так");
             e.printStackTrace();
         }
+        update_table();
     }
 
     @FXML

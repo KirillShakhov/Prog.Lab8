@@ -1,4 +1,4 @@
-package lab;
+package lab.Controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import lab.Main;
 
 public class ErrorController {
 

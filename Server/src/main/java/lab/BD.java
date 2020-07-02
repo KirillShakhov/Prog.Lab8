@@ -113,9 +113,8 @@ public class BD {
             }
         }
         return data.size();
-
-
     }
+
     public static int giveID_User(){
 
         try (ResultSet generatedKeys = connection.createStatement().getGeneratedKeys()) {
@@ -383,21 +382,10 @@ public class BD {
     public static boolean addUser(User user){
         try {
             Statement stmt = connection.createStatement();
-
-            //String sql = new String("INSERT INTO USERS (ID, NAME,PASS) VALUES ({},'{}','{}');").format(String.valueOf(users.size()), user.getName(), sha1(user.getPass()));
-            //String sql = "INSERT INTO USERS (ID, NAME,PASS) VALUES ("+users.size()+",'"+user.getName()+",'"+ sha1(user.getPass())+"');";
-            String id = String.valueOf(users.size());
             String name = user.getName();
             String pass = sha1(user.getPass());
-            String sql = String.format("INSERT INTO USERS (ID, NAME,PASS) VALUES (%s, '%s', '%s');", id, name, pass);
+            String sql = String.format("INSERT INTO USERS (NAME,PASS) VALUES ('%s', '%s');", name, pass);
             System.out.println(sql);
-
-            /*
-            String sql = "INSERT INTO USERS (ID, NAME,PASS) " +
-                    "VALUES (0,'kir', '40BD001563085FC35165329EA1FF5C5ECBDBBEEF');";
-
-
-             */
 
             stmt.executeUpdate(sql);
             BD.users.add(new User(user.getName(), sha1(user.getPass())));
@@ -523,8 +511,7 @@ public class BD {
             Statement stmt;
             stmt = connection.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS USERS" +
-                    "(ID INT PRIMARY KEY     NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
+                    "(NAME           TEXT    NOT NULL, " +
                     " PASS            TEXT     NOT NULL)";
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS DATA_BD" +
