@@ -11,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -27,12 +24,12 @@ import lab.BasicClasses.Coordinates;
 import lab.BasicClasses.MusicBand;
 import lab.BasicClasses.MusicGenre;
 import lab.ClientController;
-import lab.Commands.ConcreteCommands.Add;
-import lab.Commands.ConcreteCommands.RemoveByID;
+import lab.Commands.ConcreteCommands.*;
 import lab.Commands.SerializedCommands.Message;
 import lab.Commands.Utils.Readers.EnumReaders.GenreReader;
 import lab.Main;
 
+import static lab.ClientController.data;
 import static lab.ClientController.fastWrite;
 import static lab.Main.error_windows;
 
@@ -40,6 +37,7 @@ public class MainController {
     private ObservableList<MusicBand> mbData = FXCollections.observableArrayList();
 
     private Long id = null;
+    private boolean only_my = false;
 
 
     @FXML
@@ -115,9 +113,6 @@ public class MainController {
     private Button del_yes_button;
 
     @FXML
-    private Button filter_button;
-
-    @FXML
     private Text name;
 
     @FXML
@@ -158,6 +153,63 @@ public class MainController {
 
     @FXML
     private TableColumn<?, ?> table_user = new TableColumn<>();
+
+    @FXML
+    private AnchorPane menu1;
+
+    @FXML
+    private ToggleButton filter_button;
+
+    @FXML
+    private AnchorPane menu2;
+
+    @FXML
+    private Button count_greater_button;
+
+    @FXML
+    private Button del_all_button;
+
+    @FXML
+    private TextField album_name_field1;
+
+    @FXML
+    private TextField album_tracks_field1;
+
+    @FXML
+    private TextField album_length_field1;
+
+    @FXML
+    private TextField album_sales_field1;
+
+    @FXML
+    private Text chech_error1;
+
+    @FXML
+    private Text text_error1;
+
+    @FXML
+    private Button back_button;
+
+    @FXML
+    private Button del_all_no_button;
+
+    @FXML
+    private Button del_all_yes_button;
+
+    @FXML
+    private Button filter_contains_name_button;
+
+    @FXML
+    private TextField name_filter_contains;
+
+    @FXML
+    private Button info_button;
+
+    @FXML
+    private Button remove_by_description_button;
+
+    @FXML
+    private TextField description;
 
 
     private double xOffSet;
@@ -288,9 +340,28 @@ public class MainController {
     }
 
     void update_table(){
-        mbData = FXCollections.observableArrayList();
-        mbData.addAll(ClientController.data);
-        table.setItems(mbData);
+        TableColumn.SortType ids = table_ids.getSortType();
+        TableColumn.SortType name = table_name.getSortType();
+        TableColumn.SortType date = table_date.getSortType();
+        TableColumn.SortType des = table_description.getSortType();
+        if(only_my){
+            mbData = FXCollections.observableArrayList();
+            for(MusicBand musicBand : ClientController.data){
+                if(musicBand.getUser_creator().equals(ClientController.name)){
+                    mbData.add(musicBand);
+                }
+            }
+            table.setItems(mbData);
+        }
+        else {
+            mbData = FXCollections.observableArrayList();
+            mbData.addAll(ClientController.data);
+            table.setItems(mbData);
+        }
+        table_ids.setSortType(ids);
+        table_name.setSortType(name);
+        table_date.setSortType(date);
+        table_description.setSortType(des);
     }
 
     @FXML
@@ -438,5 +509,142 @@ public class MainController {
         table_user.setCellValueFactory(new PropertyValueFactory<>("user_creator"));
         mbData.addAll(ClientController.data);
         table.setItems(mbData);
+        menu1.setVisible(true);
+        menu2.setVisible(false);
+    }
+
+    @FXML
+    public void filter(MouseEvent mouseEvent) {
+        only_my = !only_my;
+        update_table();
+    }
+
+    @FXML
+    public void filter_contains(MouseEvent mouseEvent) {
+        if(name_filter_contains.getText().equals("")){
+            chech_error1.setVisible(true);
+            text_error1.setVisible(true);
+            text_error1.setText("Вы не указали имя");
+            name_filter_contains.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+        }
+        else {
+            name_filter_contains.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            String result = fastWrite(new Message(new FilterContainsName(), name_filter_contains.getText()));
+            if (!result.equals("Объект удален")) {
+                error_windows(result);
+            }
+            update_table();
+        }
+    }
+
+    @FXML
+    public void del_all(MouseEvent mouseEvent) {
+        del_all_button.setVisible(false);
+        del_all_yes_button.setVisible(true);
+        del_all_no_button.setVisible(true);
+    }
+
+    @FXML
+    public void back(MouseEvent mouseEvent) {
+        menu1.setVisible(true);
+        menu2.setVisible(false);
+    }
+
+    @FXML
+    public void delallNo(MouseEvent mouseEvent) {
+        del_all_button.setVisible(true);
+        del_all_yes_button.setVisible(false);
+        del_all_no_button.setVisible(false);
+    }
+
+    @FXML
+    public void delallYes(MouseEvent mouseEvent) {
+        String result = fastWrite(new Message(new Clear()));
+        if (result.equals("Объект удален")) {
+            update_table();
+        } else {
+            error_windows(result);
+        }
+        del_all_button.setVisible(true);
+        del_all_yes_button.setVisible(false);
+        del_all_no_button.setVisible(false);
+    }
+
+    @FXML
+    public void more(MouseEvent mouseEvent) {
+        menu1.setVisible(false);
+        menu2.setVisible(true);
+    }
+
+    @FXML
+    public void remove_by_description(MouseEvent mouseEvent) {
+        if(description.getText().equals("")){
+            chech_error1.setVisible(true);
+            text_error1.setVisible(true);
+            text_error1.setText("Вы не указали описание");
+            description.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+        }
+        else{
+            description.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            String result = fastWrite(new Message(new RemoveByDescription(), description.getText()));
+            if (!result.equals("Объект удален")) {
+                error_windows(result);
+            }
+            update_table();
+        }
+    }
+
+    @FXML
+    public void count_greater(MouseEvent mouseEvent) {
+        //TODO доделать
+        /*
+        String result = fastWrite(new Message(new CountGreaterThanBestAlbum(),));
+        if (!result.equals("Объект удален")) {
+            error_windows(result);
+        }
+        update_table();
+
+         */
+    }
+
+    @FXML
+    public void parentOnClick(MouseEvent mouseEvent) {
+        parent.setOnMousePressed(events -> {
+            xOffSet = events.getSceneX();
+            yOffSet = events.getSceneY();
+        });
+        parent.setOnMouseDragged(events -> {
+            Main.stage.setX(events.getScreenX() - xOffSet);
+            Main.stage.setY(events.getScreenY() - yOffSet);
+        });
+
+        boolean result = isResult(true, name_field, x_field, y_field, genre_field, album_name_field);
+        result = isResult(result, album_tracks_field, album_length_field, album_sales_field, np_field, description_field);
+        if(!result){
+            add_button.setDisable(true);
+            del_button.setDisable(true);
+            update_button.setDisable(true);
+        }
+        else{
+            if(id == null){
+                del_button.setDisable(true);
+                update_button.setDisable(true);
+            }
+            else{
+                del_button.setDisable(false);
+                update_button.setDisable(false);
+            }
+            add_button.setDisable(false);
+        }
+        update_table();
+        del_all_button.setVisible(true);
+        del_all_yes_button.setVisible(false);
+        del_all_no_button.setVisible(false);
+        del_button.setVisible(true);
+        del_yes_button.setVisible(false);
+        del_no_button.setVisible(false);
+        chech_error1.setVisible(false);
+        text_error1.setVisible(false);
+        id = null;
     }
 }

@@ -4,6 +4,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
@@ -14,7 +15,7 @@
 
 <!--suppress ALL -->
 
-<AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lab.Controllers.MainController">
+<AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#parentOnClick" onMouseMoved="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lab.Controllers.MainController">
    <children>
       <AnchorPane layoutY="62.0" prefHeight="537.0" prefWidth="800.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
          <children>
@@ -33,7 +34,102 @@
                         </TableView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutX="-2.0" prefHeight="431.0" prefWidth="310.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="menu2" prefHeight="431.0" prefWidth="310.0">
+                     <children>
+                        <Button fx:id="count_greater_button" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#count_greater" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="CountGreater">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="del_all_button" layoutX="15.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#del_all" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ff0000; -fx-background-radius: 10;" text="DEL ALL" textFill="WHITE">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <TextField fx:id="album_name_field1" alignment="CENTER" layoutX="157.0" layoutY="16.0" prefHeight="22.0" prefWidth="134.0" promptText="ALBUM NAME" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="album_tracks_field1" alignment="CENTER" layoutX="158.0" layoutY="53.0" prefHeight="32.0" prefWidth="134.0" promptText="TRACKS" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="album_length_field1" alignment="CENTER" layoutX="158.0" layoutY="90.0" prefHeight="22.0" prefWidth="134.0" promptText="LENGTH" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="album_sales_field1" alignment="CENTER" layoutX="159.0" layoutY="127.0" prefHeight="22.0" prefWidth="134.0" promptText="SALES" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </TextField>
+                        <Line endX="181.0" layoutX="115.0" layoutY="297.0" startX="-100.0" />
+                        <Text fx:id="chech_error1" fill="RED" layoutX="156.0" layoutY="316.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Неправильный аргумент:" visible="false">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="text_error1" fill="RED" layoutX="158.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" textAlignment="CENTER" visible="false" wrappingWidth="134.00001525878906">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="back_button" layoutX="158.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#back" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="BACK">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="del_all_no_button" layoutX="14.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#delallNo" prefHeight="34.0" prefWidth="65.0" style="-fx-background-color: #FF7373; -fx-background-radius: 10;" text="NO" textFill="WHITE" visible="false">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="del_all_yes_button" layoutX="82.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#delallYes" prefHeight="34.0" prefWidth="65.0" style="-fx-background-color: #ff0000; -fx-background-radius: 10;" text="YES" textFill="WHITE" visible="false">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="clean_fields_button" layoutX="158.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#clean_fields" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="CLEAN">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <ToggleButton fx:id="filter_button" layoutX="159.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#filter" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ONLY MY">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </ToggleButton>
+                        <Button fx:id="filter_contains_name_button" layoutX="15.0" layoutY="170.0" mnemonicParsing="false" onMouseClicked="#filter_contains" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="FilterContains">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <TextField fx:id="name_filter_contains" alignment="CENTER" layoutX="159.0" layoutY="170.0" prefHeight="22.0" prefWidth="134.0" promptText="Name" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </TextField>
+                        <Button fx:id="info_button" layoutX="15.0" layoutY="258.0" mnemonicParsing="false" onMouseClicked="#count_greater" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="INFO">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="remove_by_description_button" layoutX="15.0" layoutY="215.0" mnemonicParsing="false" onMouseClicked="#remove_by_description" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="RemoveBy">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </Button>
+                        <TextField fx:id="description" alignment="CENTER" layoutX="160.0" layoutY="215.0" prefHeight="22.0" prefWidth="134.0" promptText="Description" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="menu1" layoutX="-2.0" prefHeight="431.0" prefWidth="310.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Button fx:id="add_button" disable="true" layoutX="14.0" layoutY="303.0" mnemonicParsing="false" onMouseClicked="#add" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ADD">
                            <font>
@@ -107,12 +203,12 @@
                            </font>
                         </TextField>
                         <Line endX="181.0" layoutX="115.0" layoutY="297.0" startX="-100.0" />
-                        <Text fx:id="chech_error" fill="RED" layoutX="156.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Неправильный аргумент:" visible="false">
+                        <Text fx:id="chech_error" fill="RED" layoutX="156.0" layoutY="316.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Неправильный аргумент:" visible="false">
                            <font>
                               <Font size="12.0" />
                            </font>
                         </Text>
-                        <Text fx:id="text_error" fill="RED" layoutX="160.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" textAlignment="CENTER" visible="false" wrappingWidth="134.00001525878906">
+                        <Text fx:id="text_error" fill="RED" layoutX="158.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" textAlignment="CENTER" visible="false" wrappingWidth="134.00001525878906">
                            <font>
                               <Font size="12.0" />
                            </font>
@@ -124,7 +220,7 @@
                               <Font name="Arial Italic" size="14.0" />
                            </font>
                         </TextField>
-                        <Button fx:id="more_button" layoutX="158.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#del" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="MORE">
+                        <Button fx:id="more_button" layoutX="158.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#more" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="MORE">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
@@ -139,16 +235,16 @@
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </Button>
-                        <Button fx:id="filter_button" layoutX="158.0" layoutY="303.0" mnemonicParsing="false" onMouseClicked="#update" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ONLY MY">
-                           <font>
-                              <Font name="Arial Italic" size="17.0" />
-                           </font>
-                        </Button>
                         <Button fx:id="clean_fields_button" layoutX="158.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#clean_fields" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="CLEAN">
                            <font>
                               <Font name="Arial Italic" size="17.0" />
                            </font>
                         </Button>
+                        <ToggleButton fx:id="filter_button" layoutX="158.0" layoutY="343.0" mnemonicParsing="false" onMouseClicked="#filter" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ONLY MY">
+                           <font>
+                              <Font name="Arial Italic" size="17.0" />
+                           </font>
+                        </ToggleButton>
                      </children>
                   </AnchorPane>
                </children>
