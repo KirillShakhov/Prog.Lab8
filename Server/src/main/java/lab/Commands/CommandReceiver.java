@@ -70,9 +70,9 @@ public class CommandReceiver {
                     o.setCreationDate(LocalDateTime.now());
                     if(BD.get(groupId).getUser_creator().equals(o.getUser_creator())) {
                         if(BD.update(o, groupId)) {
-                            return "Команда update выполнена.";
+                            return "Команда update выполнена";
                         }else{
-                            return "Команда update не выполнена.";
+                            return "Команда update не выполнена";
                         }
                     }
                     else{

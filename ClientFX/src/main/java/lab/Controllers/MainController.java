@@ -374,17 +374,23 @@ public class MainController {
                 viewError("Имя пустое");
                 name_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
-            if (x_field.getText().isEmpty() || Double.parseDouble(x_field.getText()) <= -687) {
+            if (x_field.getText().isEmpty() || Double.parseDouble(x_field.getText()) <= -687 || !x_field.getText().matches("(([-+])?[0-9]+(\\.[0-9]+)?)+")) {
                 res = false;
                 viewError("X число больше -687");
                 x_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
-            if (y_field.getText().isEmpty() || Float.parseFloat(y_field.getText()) < -1000f) {
+            if (y_field.getText().isEmpty() || Float.parseFloat(y_field.getText()) < -1000f || !y_field.getText().matches("(([-+])?[0-9]+(\\.[0-9]+)?)+")) {
                 res = false;
                 viewError("Y число больше -1000");
                 y_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
-            if (np_field.getText().isEmpty() || Integer.parseInt(np_field.getText()) <= 0) {
+            try {
+                if (np_field.getText().isEmpty() || Integer.parseInt(np_field.getText()) <= 0 || !np_field.getText().matches("[-+]?\\d+")) {
+                    res = false;
+                    viewError("numberOfParticipants больше 0");
+                    np_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+            }catch (Exception e){
                 res = false;
                 viewError("numberOfParticipants больше 0");
                 np_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
@@ -404,17 +410,36 @@ public class MainController {
                 viewError("Имя альбома пустое");
                 album_name_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
-            if (album_tracks_field.getText().isEmpty() || Integer.parseInt(album_tracks_field.getText()) <= 0) {
+            try {
+                if (album_tracks_field.getText().isEmpty() || Integer.parseInt(album_tracks_field.getText()) <= 0 || !album_tracks_field.getText().matches("[-+]?\\d+")) {
+                    res = false;
+                    viewError("Album tracks число больше 0");
+                    album_tracks_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+            }catch (Exception e){
                 res = false;
                 viewError("Album tracks число больше 0");
                 album_tracks_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
-            if (album_length_field.getText().isEmpty() || Integer.parseInt(album_length_field.getText()) <= 0) {
+            try {
+                if (album_length_field.getText().isEmpty() || Integer.parseInt(album_length_field.getText()) <= 0 || !album_length_field.getText().matches("[-+]?\\d+")) {
+                    res = false;
+                    viewError("Album length число больше 0");
+                    album_length_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+            }
+            catch (Exception e){
                 res = false;
                 viewError("Album length число больше 0");
                 album_length_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
-            if (album_sales_field.getText().isEmpty() || Integer.parseInt(album_sales_field.getText()) <= 0) {
+            try {
+                if (album_sales_field.getText().isEmpty() || Integer.parseInt(album_sales_field.getText()) <= 0 || !album_sales_field.getText().matches("[-+]?\\d+")) {
+                    res = false;
+                    viewError("Album sales число больше 0");
+                    album_sales_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+            }catch (Exception e){
                 res = false;
                 viewError("Album sales число больше 0");
                 album_sales_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
@@ -453,7 +478,17 @@ public class MainController {
         date_field.setText("");
         name_field.setText("");
         createdate_field.setText("");
+        description.setText("");
+        name_filter_contains.setText("");
+        album_name_field1.setText("");
+        album_tracks_field1.setText("");
+        album_length_field1.setText("");
+        album_sales_field1.setText("");
         setDefaultTheme();
+        chech_error.setVisible(false);
+        text_error.setVisible(false);
+        chech_error1.setVisible(false);
+        text_error1.setVisible(false);
     }
 
     private void setDefaultTheme() {
@@ -467,7 +502,13 @@ public class MainController {
         album_tracks_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
         album_length_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
         album_sales_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+        album_name_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+        album_tracks_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+        album_length_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+        album_sales_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
         date_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+        description.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
+        name_filter_contains.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
     }
 
     void viewError(String text){
@@ -487,7 +528,102 @@ public class MainController {
     @FXML
     void update(){
         if(id != null){
-            fastWrite(new Message(new RemoveByID(), String.valueOf(id)));
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                boolean res = true;
+                if (name_field.getText().isEmpty()) {
+                    res = false;
+                    viewError("Имя пустое");
+                    name_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                if (x_field.getText().isEmpty() || Double.parseDouble(x_field.getText()) <= -687 || !x_field.getText().matches("(([-+])?[0-9]+(\\.[0-9]+)?)+")) {
+                    res = false;
+                    viewError("X число больше -687");
+                    x_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                if (y_field.getText().isEmpty() || Float.parseFloat(y_field.getText()) < -1000f || !y_field.getText().matches("(([-+])?[0-9]+(\\.[0-9]+)?)+")) {
+                    res = false;
+                    viewError("Y число больше -1000");
+                    y_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                try {
+                    if (np_field.getText().isEmpty() || Integer.parseInt(np_field.getText()) <= 0 || !np_field.getText().matches("[-+]?\\d+")) {
+                        res = false;
+                        viewError("numberOfParticipants больше 0");
+                        np_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    }
+                }catch (Exception e){
+                    res = false;
+                    viewError("numberOfParticipants больше 0");
+                    np_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                if (description_field.getText().isEmpty()) {
+                    res = false;
+                    viewError("Описание пустое");
+                    description_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                if (genre_field.getText().isEmpty() || !GenreReader.checkExist(genre_field.getText())) {
+                    res = false;
+                    viewError("genre(PSYCHEDELIC_ROCK,RAP,POP,POST_ROCK,POST_PUNK)");
+                    genre_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                if (album_name_field.getText().isEmpty()) {
+                    res = false;
+                    viewError("Имя альбома пустое");
+                    album_name_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                try {
+                    if (album_tracks_field.getText().isEmpty() || Integer.parseInt(album_tracks_field.getText()) <= 0 || !album_tracks_field.getText().matches("[-+]?\\d+")) {
+                        res = false;
+                        viewError("Album tracks число больше 0");
+                        album_tracks_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    }
+                }catch (Exception e){
+                    res = false;
+                    viewError("Album tracks число больше 0");
+                    album_tracks_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                try {
+                    if (album_length_field.getText().isEmpty() || Integer.parseInt(album_length_field.getText()) <= 0 || !album_length_field.getText().matches("[-+]?\\d+")) {
+                        res = false;
+                        viewError("Album length число больше 0");
+                        album_length_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    }
+                }
+                catch (Exception e){
+                    res = false;
+                    viewError("Album length число больше 0");
+                    album_length_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                try {
+                    if (album_sales_field.getText().isEmpty() || Integer.parseInt(album_sales_field.getText()) <= 0 || !album_sales_field.getText().matches("[-+]?\\d+")) {
+                        res = false;
+                        viewError("Album sales число больше 0");
+                        album_sales_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    }
+                }catch (Exception e){
+                    res = false;
+                    viewError("Album sales число больше 0");
+                    album_sales_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+                if(res) {
+                    viewError("");
+                    setDefaultTheme();
+                    MusicBand musicBand = new MusicBand(id, name_field.getText(), new Coordinates(Double.parseDouble(x_field.getText()), Float.parseFloat(y_field.getText())), LocalDateTime.now(), Integer.parseInt(np_field.getText()), description_field.getText(), format.parse(date_field.getText()), Enum.valueOf(MusicGenre.class, genre_field.getText()), new Album(album_name_field.getText(), Integer.parseInt(album_tracks_field.getText()), Integer.parseInt(album_length_field.getText()), Integer.parseInt(album_sales_field.getText())), ClientController.name);
+                    String result = fastWrite(new Message(new Update(), musicBand, String.valueOf(id)));
+                    if(!result.equals("Команда update выполнена")){
+                        error_windows(result);
+                    }
+                    mbData = FXCollections.observableArrayList();
+                    mbData.addAll(ClientController.data);
+                }
+            } catch (ParseException e) {
+                viewError("Неправильный формат у даты");
+                date_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+            } catch (Exception e){
+                viewError("Что-то пошло не так");
+                e.printStackTrace();
+            }
             update_table();
         }
         else{
@@ -596,15 +732,60 @@ public class MainController {
 
     @FXML
     public void count_greater(MouseEvent mouseEvent) {
-        //TODO доделать
-        /*
-        String result = fastWrite(new Message(new CountGreaterThanBestAlbum(),));
-        if (!result.equals("Объект удален")) {
-            error_windows(result);
+        try {
+            boolean res = true;
+            if (album_name_field1.getText().isEmpty()) {
+                res = false;
+                viewError("Имя альбома пустое");
+                album_name_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+            }
+            try {
+                if (album_tracks_field1.getText().isEmpty() || Integer.parseInt(album_tracks_field.getText()) <= 0 || !album_tracks_field.getText().matches("[-+]?\\d+")) {
+                    res = false;
+                    viewError("Album tracks число больше 0");
+                    album_tracks_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+            }catch (Exception e){
+                res = false;
+                viewError("Album tracks число больше 0");
+                album_tracks_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+            }
+            try {
+                if (album_length_field1.getText().isEmpty() || Integer.parseInt(album_length_field.getText()) <= 0 || !album_length_field.getText().matches("[-+]?\\d+")) {
+                    res = false;
+                    viewError("Album length число больше 0");
+                    album_length_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+            }
+            catch (Exception e){
+                res = false;
+                viewError("Album length число больше 0");
+                album_length_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+            }
+            try {
+                if (album_sales_field1.getText().isEmpty() || Integer.parseInt(album_sales_field.getText()) <= 0 || !album_sales_field.getText().matches("[-+]?\\d+")) {
+                    res = false;
+                    viewError("Album sales число больше 0");
+                    album_sales_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                }
+            }catch (Exception e){
+                res = false;
+                viewError("Album sales число больше 0");
+                album_sales_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+            }
+            if(res) {
+                viewError("");
+                setDefaultTheme();
+                MusicBand musicBand = new MusicBand(0L, "", new Coordinates(0, 0f), LocalDateTime.now(), 0, "", null, MusicGenre.POP, new Album(album_name_field1.getText(), Integer.parseInt(album_tracks_field1.getText()), Integer.parseInt(album_length_field1.getText()), Integer.parseInt(album_sales_field1.getText())), ClientController.name);
+                fastWrite(new Message(new CountGreaterThanBestAlbum(), musicBand));
+                mbData = FXCollections.observableArrayList();
+                mbData.addAll(ClientController.data);
+            }
+        } catch (Exception e){
+            viewError("Что-то пошло не так");
+            e.printStackTrace();
         }
         update_table();
-
-         */
     }
 
     @FXML
@@ -636,15 +817,17 @@ public class MainController {
             }
             add_button.setDisable(false);
         }
-        update_table();
         del_all_button.setVisible(true);
         del_all_yes_button.setVisible(false);
         del_all_no_button.setVisible(false);
         del_button.setVisible(true);
+        del_button.setDisable(true);
         del_yes_button.setVisible(false);
         del_no_button.setVisible(false);
         chech_error1.setVisible(false);
         text_error1.setVisible(false);
+        update_button.setDisable(true);
         id = null;
+        update_table();
     }
 }
