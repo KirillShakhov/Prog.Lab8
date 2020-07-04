@@ -1,9 +1,12 @@
 package lab.Controllers;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -619,7 +622,7 @@ public class MainController {
                 }
             } catch (ParseException e) {
                 viewError("Неправильный формат у даты");
-                date_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                date_field.setStyle("-fx-background-color: #ff0000; -fx-background-radius: 10");
             } catch (Exception e){
                 viewError("Что-то пошло не так");
                 e.printStackTrace();
@@ -647,6 +650,8 @@ public class MainController {
         table.setItems(mbData);
         menu1.setVisible(true);
         menu2.setVisible(false);
+
+        update_language(Main.language);
     }
 
     @FXML
@@ -829,5 +834,73 @@ public class MainController {
         update_button.setDisable(true);
         id = null;
         update_table();
+    }
+
+    void update_language(String language){
+        String[] lan = language.split("_");
+        Locale current = new Locale(lan[0], lan[1]);
+        ResourceBundle rb = ResourceBundle.getBundle("Client", current);
+        //ResourceBundle bundle = ResourceBundle.getBundle("com.example.i18n.text", new UTF8Control());
+        map_button.setText(rb.getString("map_button"));
+        language_button.setText(rb.getString("language_button"));
+        del_all_button.setText(rb.getString("del_all_button"));
+        del_all_yes_button.setText(rb.getString("del_all_yes_button"));
+        del_all_no_button.setText(rb.getString("del_all_no_button"));
+
+        del_button.setText(rb.getString("del_button"));
+        del_yes_button.setText(rb.getString("del_yes_button"));
+        del_no_button.setText(rb.getString("del_no_button"));
+
+
+        album_name_field1.setPromptText(rb.getString("album_name_field1"));
+        album_length_field1.setPromptText(rb.getString("album_length_field1"));
+        album_sales_field1.setPromptText(rb.getString("album_sales_field1"));
+        album_tracks_field1.setPromptText(rb.getString("album_tracks_field1"));
+
+        name_filter_contains.setPromptText(rb.getString("name_filter_contains"));
+        description.setPromptText(rb.getString("description"));
+
+        filter_contains_name_button.setText(rb.getString("filter_contains_name_button"));
+        remove_by_description_button.setText(rb.getString("remove_by_description_button"));
+
+        count_greater_button.setText(rb.getString("count_greater_button"));
+        info_button.setText(rb.getString("count_greater_button"));
+        clean_fields_button.setText(rb.getString("clean_fields_button"));
+        filter_button.setText(rb.getString("filter_button"));
+        back_button.setText(rb.getString("filter_button"));
+
+
+
+        name_field.setPromptText(rb.getString("name_field"));
+        x_field.setPromptText(rb.getString("x_field"));
+        y_field.setPromptText(rb.getString("y_field"));
+        genre_field.setPromptText(rb.getString("genre_field"));
+        np_field.setPromptText(rb.getString("np_field"));
+        album_name_field.setPromptText(rb.getString("album_name_field"));
+        date_field.setPromptText(rb.getString("date_field"));
+        album_tracks_field.setPromptText(rb.getString("album_tracks_field"));
+        createdate_field.setPromptText(rb.getString("createdate_field"));
+        album_length_field.setPromptText(rb.getString("album_length_field"));
+        description_field.setPromptText(rb.getString("description_field"));
+        album_sales_field.setPromptText(rb.getString("album_sales_field"));
+
+        clean_fields_button.setText(rb.getString("clean_fields_button"));
+        add_button.setText(rb.getString("clean_fields_button"));
+        update_button.setText(rb.getString("clean_fields_button"));
+        filter_button.setText(rb.getString("clean_fields_button"));
+        more_button.setText(rb.getString("clean_fields_button"));
+    }
+
+    public void change_language(MouseEvent mouseEvent) {
+        if(Main.language.equals("ru_RU")) {
+            Main.language = "en_US";
+        }
+        else if(Main.language.equals("en_US")){
+            Main.language = "ru_RU";
+        }
+        else{
+            Main.language = "en_US";
+        }
+        update_language(Main.language);
     }
 }

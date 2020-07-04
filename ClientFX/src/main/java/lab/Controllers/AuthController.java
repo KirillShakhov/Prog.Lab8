@@ -1,7 +1,10 @@
 package lab.Controllers;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.scene.control.PasswordField;
@@ -20,7 +23,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import lab.Main;
 
-import static java.lang.Thread.sleep;
 import static lab.ClientController.*;
 
 public class AuthController {
@@ -76,6 +78,18 @@ public class AuthController {
 
     @FXML
     private Text version_text;
+
+    @FXML
+    private Button language_button;
+
+    @FXML
+    private Button theme_button;
+
+    @FXML
+    private Text login_text;
+
+    @FXML
+    private Text register_text;
 
     @FXML
     void exit(MouseEvent event) {
@@ -170,5 +184,44 @@ public class AuthController {
     @FXML
     void initialize() {
         version_text.setText(String.valueOf(Main.version));
+        update_language(Main.language);
+    }
+
+    void update_language(String language){
+        String[] lan = language.split("_");
+        Locale current = new Locale(lan[0], lan[1]);
+        ResourceBundle rb = ResourceBundle.getBundle("Client", current);
+        //ResourceBundle rb = ResourceBundle.getBundle("Client", new UTF8Control());
+        language_button.setText(rb.getString("language_button"));
+        login_text.setText(new String(rb.getString("login_text").getBytes(), StandardCharsets.UTF_8));
+        register_text.setText(rb.getString("register_text"));
+        login_name_error.setText(rb.getString("login_name_error"));
+        login_pass_error.setText(rb.getString("login_pass_error"));
+        login_name_field.setPromptText(rb.getString("login_name_field"));
+        login_pass_field.setPromptText(rb.getString("login_pass_field"));
+        login_button.setText(rb.getString("login_button"));
+
+
+        register_text.setText(rb.getString("register_text"));
+        register_button.setText(rb.getString("register_button"));
+        register_name_error.setText(rb.getString("register_name_error"));
+        register_pass_error.setText(rb.getString("register_pass_error"));
+        register_passnull_error.setText(rb.getString("register_passnull_error"));
+        register_name_field.setPromptText(rb.getString("register_name_field"));
+        register_pass_field.setPromptText(rb.getString("register_pass_field"));
+        register_pass2_field.setPromptText(rb.getString("register_pass2_field"));
+    }
+
+    public void change_language(MouseEvent mouseEvent) {
+        if(Main.language.equals("ru_RU")) {
+            Main.language = "en_US";
+        }
+        else if(Main.language.equals("en_US")){
+            Main.language = "ru_RU";
+        }
+        else{
+            Main.language = "en_US";
+        }
+        update_language(Main.language);
     }
 }

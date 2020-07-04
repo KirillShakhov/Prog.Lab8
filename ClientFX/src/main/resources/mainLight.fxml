@@ -34,7 +34,7 @@
                         </TableView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="menu2" prefHeight="431.0" prefWidth="310.0">
+                  <AnchorPane fx:id="menu2" prefHeight="431.0" prefWidth="310.0" visible="false">
                      <children>
                         <Button fx:id="count_greater_button" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#count_greater" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="CountGreater">
                            <font>
@@ -129,7 +129,7 @@
                         </TextField>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="menu1" layoutX="-2.0" prefHeight="431.0" prefWidth="310.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="menu1" layoutX="-2.0" prefHeight="431.0" prefWidth="310.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Button fx:id="add_button" disable="true" layoutX="14.0" layoutY="303.0" mnemonicParsing="false" onMouseClicked="#add" prefHeight="34.0" prefWidth="134.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" text="ADD">
                            <font>
@@ -289,7 +289,7 @@
             <Font size="10.0" />
          </font>
       </Button>
-      <Button fx:id="language_button" layoutX="694.0" layoutY="14.0" mnemonicParsing="false" opacity="0.88" prefHeight="34.0" prefWidth="43.0" style="-fx-background-color: silver;" text="EN" textAlignment="CENTER" AnchorPane.rightAnchor="64.0" AnchorPane.topAnchor="14.0">
+      <Button fx:id="language_button" layoutX="694.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#change_language" opacity="0.88" prefHeight="34.0" prefWidth="43.0" style="-fx-background-color: silver;" text="EN" textAlignment="CENTER" AnchorPane.rightAnchor="64.0" AnchorPane.topAnchor="14.0">
          <font>
             <Font size="15.0" />
          </font>

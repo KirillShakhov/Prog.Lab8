@@ -83,7 +83,7 @@ public class ServerController implements Runnable {
 		}
 	}
 
-	public static Message getSocketObjet(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
+	public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
 		ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
 		socketChannel.read(data);
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data.array());
@@ -143,7 +143,7 @@ public class ServerController implements Runnable {
 		if (key.isReadable() && key.isValid()) {
 			SocketChannel channel = (SocketChannel) key.channel();
 			try {
-				Message message = getSocketObjet(channel);
+				Message message = getSocketObject(channel);
 				message.setSocketChannel(channel);
 				incomingMessages.add(message);
 				channel.register(selector, SelectionKey.OP_WRITE);

@@ -368,7 +368,6 @@ public class BD {
             preparedStatement.setInt(12, Integer.parseInt(album_lenght));
             preparedStatement.setInt(13, Integer.parseInt(album_sales));
             preparedStatement.setString(14, user_creator);
-
             preparedStatement.executeUpdate();
 
             data.add(musicBand);

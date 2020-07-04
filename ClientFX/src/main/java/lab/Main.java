@@ -18,6 +18,7 @@ public class Main extends Application{
 
 
     public static final double version = 0.1;
+    public static String language = "en_EN";
     public static final String host = "127.0.0.1";
     public static final String port = "3030";
 
