@@ -3,6 +3,7 @@ package lab.Controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -18,6 +19,9 @@ public class MapController {
 
     @FXML
     private AnchorPane parent;
+
+    @FXML
+    private Canvas canvas;
 
     @FXML
     private Text name;
@@ -57,14 +61,6 @@ public class MapController {
 
     @FXML
     void initialize() {
-        assert parent != null : "fx:id=\"parent\" was not injected: check your FXML file 'mapLight.fxml'.";
-        assert name != null : "fx:id=\"name\" was not injected: check your FXML file 'mapLight.fxml'.";
-        assert version_text != null : "fx:id=\"version_text\" was not injected: check your FXML file 'mapLight.fxml'.";
-        assert table_button != null : "fx:id=\"table_button\" was not injected: check your FXML file 'mapLight.fxml'.";
-        assert theme_button != null : "fx:id=\"theme_button\" was not injected: check your FXML file 'mapLight.fxml'.";
-        assert leave_button != null : "fx:id=\"leave_button\" was not injected: check your FXML file 'mapLight.fxml'.";
-        assert exit_button != null : "fx:id=\"exit_button\" was not injected: check your FXML file 'mapLight.fxml'.";
-        assert language_button != null : "fx:id=\"language_button\" was not injected: check your FXML file 'mapLight.fxml'.";
 
     }
 }

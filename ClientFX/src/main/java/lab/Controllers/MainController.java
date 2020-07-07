@@ -1,7 +1,7 @@
 package lab.Controllers;
 
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -15,9 +15,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -32,7 +35,6 @@ import lab.Commands.SerializedCommands.Message;
 import lab.Commands.Utils.Readers.EnumReaders.GenreReader;
 import lab.Main;
 
-import static lab.ClientController.data;
 import static lab.ClientController.fastWrite;
 import static lab.Main.error_windows;
 
@@ -268,7 +270,7 @@ public class MainController {
         ClientController.name = null;
         ClientController.pass = null;
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/authLight.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/auth"+Main.theme+".fxml"));
             Main.stage.setScene(new Scene(root));
             Main.stage.show();
         } catch (IOException e) {
@@ -281,6 +283,7 @@ public class MainController {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         MusicBand musicBand = table.getSelectionModel().getSelectedItem();
         try {
+            update_figure(musicBand);
             id = musicBand.getID();
             name_field.setText(musicBand.getName());
             x_field.setText(String.valueOf(musicBand.getCoordinates().getX()));
@@ -292,7 +295,11 @@ public class MainController {
             album_sales_field.setText(String.valueOf(musicBand.getBestAlbum().getSales()));
             np_field.setText(String.valueOf(musicBand.getNumberOfParticipants()));
             description_field.setText(musicBand.getDescription());
-            date_field.setText(format.format(musicBand.getEstablishmentDate()));
+            try {
+                date_field.setText(format.format(musicBand.getEstablishmentDate()));
+            }catch (Exception e){
+                date_field.setText("null");
+            }
             createdate_field.setText(String.valueOf(musicBand.getCreationDate()));
             del_yes_button.setVisible(false);
             del_no_button.setVisible(false);
@@ -300,7 +307,9 @@ public class MainController {
             add_button.setDisable(false);
             del_button.setDisable(false);
             update_button.setDisable(false);
-        } catch (Exception ignored){}
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -613,12 +622,12 @@ public class MainController {
                     viewError("");
                     setDefaultTheme();
                     MusicBand musicBand = new MusicBand(id, name_field.getText(), new Coordinates(Double.parseDouble(x_field.getText()), Float.parseFloat(y_field.getText())), LocalDateTime.now(), Integer.parseInt(np_field.getText()), description_field.getText(), format.parse(date_field.getText()), Enum.valueOf(MusicGenre.class, genre_field.getText()), new Album(album_name_field.getText(), Integer.parseInt(album_tracks_field.getText()), Integer.parseInt(album_length_field.getText()), Integer.parseInt(album_sales_field.getText())), ClientController.name);
+                    update_figure(musicBand);
                     String result = fastWrite(new Message(new Update(), musicBand, String.valueOf(id)));
                     if(!result.equals("Команда update выполнена")){
                         error_windows(result);
                     }
-                    mbData = FXCollections.observableArrayList();
-                    mbData.addAll(ClientController.data);
+                    update_table();
                 }
             } catch (ParseException e) {
                 viewError("Неправильный формат у даты");
@@ -650,6 +659,9 @@ public class MainController {
         table.setItems(mbData);
         menu1.setVisible(true);
         menu2.setVisible(false);
+        triangle.setVisible(false);
+        square.setVisible(false);
+        circle.setVisible(false);
 
         update_language(Main.language);
     }
@@ -864,10 +876,10 @@ public class MainController {
         remove_by_description_button.setText(rb.getString("remove_by_description_button"));
 
         count_greater_button.setText(rb.getString("count_greater_button"));
-        info_button.setText(rb.getString("count_greater_button"));
+        info_button.setText(rb.getString("info_button"));
         clean_fields_button.setText(rb.getString("clean_fields_button"));
         filter_button.setText(rb.getString("filter_button"));
-        back_button.setText(rb.getString("filter_button"));
+        back_button.setText(rb.getString("back_button"));
 
 
 
@@ -885,22 +897,63 @@ public class MainController {
         album_sales_field.setPromptText(rb.getString("album_sales_field"));
 
         clean_fields_button.setText(rb.getString("clean_fields_button"));
-        add_button.setText(rb.getString("clean_fields_button"));
-        update_button.setText(rb.getString("clean_fields_button"));
-        filter_button.setText(rb.getString("clean_fields_button"));
-        more_button.setText(rb.getString("clean_fields_button"));
+        add_button.setText(rb.getString("add_button"));
+        update_button.setText(rb.getString("update_button"));
+        filter_button.setText(rb.getString("filter_button"));
+        more_button.setText(rb.getString("more_button"));
     }
 
     public void change_language(MouseEvent mouseEvent) {
-        if(Main.language.equals("ru_RU")) {
-            Main.language = "en_US";
-        }
-        else if(Main.language.equals("en_US")){
-            Main.language = "ru_RU";
-        }
-        else{
-            Main.language = "en_US";
-        }
+        Main.change_language();
         update_language(Main.language);
+    }
+
+    private void update_figure(MusicBand musicBand) {
+        if (musicBand == null) {
+            triangle.setVisible(false);
+            square.setVisible(false);
+            circle.setVisible(false);
+        } else {
+            triangle.setVisible(false);
+            square.setVisible(false);
+            circle.setVisible(false);
+            int r = Math.abs(musicBand.getName().hashCode() % 250);
+            int g = Math.abs(musicBand.getName().hashCode() * 250000 % 250);
+            int b = Math.abs(musicBand.getName().hashCode() * 250000000 % 250);
+            Color color = Color.rgb(r, g, b);
+            switch (musicBand.getGenre()) {
+                case PSYCHEDELIC_ROCK:
+                    square.setFill(color);
+                    square.setVisible(true);
+                    break;
+                case RAP:
+                    triangle.setFill(color);
+                    triangle.setVisible(true);
+                    break;
+                case POP:
+                    circle.setFill(color);
+                    circle.setVisible(true);
+                    break;
+                case POST_ROCK:
+                    square.setFill(color);
+                    square.setVisible(true);
+                    break;
+                case POST_PUNK:
+                    square.setFill(color);
+                    square.setVisible(true);
+                    break;
+            }
+        }
+    }
+
+    @FXML
+    public void map(MouseEvent mouseEvent) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/map"+Main.theme+".fxml"));
+            Main.stage.setScene(new Scene(root));
+            Main.stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

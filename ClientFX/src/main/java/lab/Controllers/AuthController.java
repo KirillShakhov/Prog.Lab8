@@ -1,7 +1,6 @@
 package lab.Controllers;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -116,7 +115,7 @@ public class AuthController {
                 login_pass_error.setVisible(false);
                 //login_button.getScene().getWindow().hide();
                 try {
-                    Parent root = FXMLLoader.load(getClass().getResource("/mainLight.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/main"+Main.theme+".fxml"));
                     Main.stage.setScene(new Scene(root));
                     Main.stage.show();
                 } catch (IOException e) {
@@ -167,7 +166,7 @@ public class AuthController {
                 ClientController.name = register_name_field.getText();
                 ClientController.pass = register_pass_field.getText();
                 try {
-                    Parent root = FXMLLoader.load(getClass().getResource("/mainLight.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/main"+Main.theme+".fxml"));
                     Main.stage.setScene(new Scene(root));
                     Main.stage.show();
                 } catch (IOException e) {
@@ -184,6 +183,7 @@ public class AuthController {
     @FXML
     void initialize() {
         version_text.setText(String.valueOf(Main.version));
+        System.out.println(Main.language);
         update_language(Main.language);
     }
 
@@ -213,15 +213,7 @@ public class AuthController {
     }
 
     public void change_language(MouseEvent mouseEvent) {
-        if(Main.language.equals("ru_RU")) {
-            Main.language = "en_US";
-        }
-        else if(Main.language.equals("en_US")){
-            Main.language = "ru_RU";
-        }
-        else{
-            Main.language = "en_US";
-        }
+        Main.change_language();
         update_language(Main.language);
     }
 }

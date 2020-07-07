@@ -18,7 +18,8 @@ public class Main extends Application{
 
 
     public static final double version = 0.1;
-    public static String language = "en_EN";
+    public static String language = "en_US";
+    public static String theme = "Light";
     public static final String host = "127.0.0.1";
     public static final String port = "3030";
 
@@ -26,7 +27,7 @@ public class Main extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getResource("/authLight.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/auth"+Main.theme+".fxml"));
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setScene(new Scene(root));
 //        primaryStage.setMaxWidth(820);
@@ -68,5 +69,16 @@ public class Main extends Application{
         ClientController clientController = new ClientController(host, port);
         clientController.run();
         launch(args);
+    }
+
+    public static void change_language(){
+        switch (Main.language) {
+            case "ru_RU":
+                Main.language = "en_US";
+                break;
+            case "en_US":
+                Main.language = "ru_RU";
+                break;
+        }
     }
 }

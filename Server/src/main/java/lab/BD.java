@@ -155,9 +155,7 @@ public class BD {
      * */
     public static boolean update(MusicBand musicBand, Long id){
         try{
-            //TODO проверить
             String name = musicBand.getName();
-            System.out.println(musicBand.getCreationDate());
             Date creation_Date = Date.valueOf(musicBand.getCreationDate().toLocalDate());
             String numberOfParticipants = String.valueOf(musicBand.getNumberOfParticipants());
             String description = musicBand.getDescription();
@@ -221,7 +219,6 @@ public class BD {
      * @return возвращает успешность выполнения метода. true - успех, false - исключение
      * */
     public static boolean save(){
-        //TODO save
         /*
         try(FileWriter writer = new FileWriter(file_path, false))
         {
@@ -259,7 +256,6 @@ public class BD {
      * @return возвращает успешность выполнения метода. true - успех, false - исключение
      * */
     private boolean load(){
-        //TODO load
         String SQL;
         ResultSet resultSet;
         try {
