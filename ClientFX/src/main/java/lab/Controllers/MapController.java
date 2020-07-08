@@ -2,9 +2,12 @@ package lab.Controllers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.Key;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,6 +24,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import lab.BasicClasses.MusicBand;
 import lab.ClientController;
 import lab.Main;
@@ -239,9 +243,19 @@ public class MapController {
 
 
             Circle t = new Circle(musicBand.getNumberOfParticipants());
-            t.setCenterX(const_x+musicBand.getCoordinates().getX());
-            t.setCenterY(const_y-musicBand.getCoordinates().getY());
+            t.setCenterX(const_x);
+            t.setCenterY(const_y);
             t.setFill(ucolor);
+
+            KeyValue xValue = new KeyValue(t.centerXProperty(), const_x+musicBand.getCoordinates().getX());
+            KeyValue yValue = new KeyValue(t.centerYProperty(), const_y-musicBand.getCoordinates().getY());
+
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(1000), xValue, yValue);
+
+            Timeline timeline = new Timeline();
+            timeline.getKeyFrames().addAll(keyFrame);
+            timeline.play();
+
             objects.getChildren().add(t);
         }
 /*
