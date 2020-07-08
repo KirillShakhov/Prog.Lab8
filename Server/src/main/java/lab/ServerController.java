@@ -76,17 +76,17 @@ public class ServerController implements Runnable {
 				ExecutorService executorService = Executors.newFixedThreadPool(2);
 				while (iterator.hasNext()) {
 					SelectionKey key = iterator.next();
-					synchronized (key) {
-						iterator.remove();
-						if (selector.isOpen()) {
-							new Connector(key).run();
+					iterator.remove();
+					if (selector.isOpen()) {
+						new Connector(key).run();
+						if(key.isValid() && key.isReadable()) {
 							Reader reader = new Reader(key);
 							Thread r = new Thread(reader);
 							r.start();
 							r.join();
-							executorService.submit(new CommandExecute(key));
-							executorService.submit(new Writer(key));
 						}
+						executorService.submit(new CommandExecute(key));
+						executorService.submit(new Writer(key));
 					}
 				}
 			}
@@ -222,6 +222,7 @@ public class ServerController implements Runnable {
 					System.out.println("Клиент отключился");
 					try {
 						channel.close();
+						server.register(selector, SelectionKey.OP_ACCEPT);
 					} catch (IOException ioException) {
 						ioException.printStackTrace();
 					}
