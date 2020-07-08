@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -35,6 +36,7 @@ import lab.Commands.SerializedCommands.Message;
 import lab.Commands.Utils.Readers.EnumReaders.GenreReader;
 import lab.Main;
 
+import static lab.ClientController.data;
 import static lab.ClientController.fastWrite;
 import static lab.Main.error_windows;
 
@@ -59,6 +61,9 @@ public class MainController {
 
     @FXML
     private Circle circle;
+
+    @FXML
+    private Circle user_color;
 
     @FXML
     private TextField name_field;
@@ -229,26 +234,6 @@ public class MainController {
             Main.stage.setX(events.getScreenX() - xOffSet);
             Main.stage.setY(events.getScreenY() - yOffSet);
         });
-
-        boolean result = isResult(true, name_field, x_field, y_field, genre_field, album_name_field);
-        result = isResult(result, album_tracks_field, album_length_field, album_sales_field, np_field, description_field);
-        if(!result){
-            add_button.setDisable(true);
-            del_button.setDisable(true);
-            update_button.setDisable(true);
-        }
-        else{
-            if(id == null){
-                del_button.setDisable(true);
-                update_button.setDisable(true);
-            }
-            else{
-                del_button.setDisable(false);
-                update_button.setDisable(false);
-            }
-            add_button.setDisable(false);
-        }
-        update_table();
     }
 
     private boolean isResult(boolean result, TextField album_tracks_field, TextField album_length_field, TextField album_sales_field, TextField np_field, TextField description_field) {
@@ -280,35 +265,43 @@ public class MainController {
 
     @FXML
     void update_fields(){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        MusicBand musicBand = table.getSelectionModel().getSelectedItem();
-        try {
-            update_figure(musicBand);
+        try{
+            MusicBand musicBand = table.getSelectionModel().getSelectedItem();
             id = musicBand.getID();
-            name_field.setText(musicBand.getName());
-            x_field.setText(String.valueOf(musicBand.getCoordinates().getX()));
-            y_field.setText(String.valueOf(musicBand.getCoordinates().getY()));
-            genre_field.setText(String.valueOf(musicBand.getGenre()));
-            album_name_field.setText(musicBand.getBestAlbum().getName());
-            album_tracks_field.setText(String.valueOf(musicBand.getBestAlbum().getTracks()));
-            album_length_field.setText(String.valueOf(musicBand.getBestAlbum().getLength()));
-            album_sales_field.setText(String.valueOf(musicBand.getBestAlbum().getSales()));
-            np_field.setText(String.valueOf(musicBand.getNumberOfParticipants()));
-            description_field.setText(musicBand.getDescription());
+        }
+        catch (Exception ignored){}
+        if(id != null) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            MusicBand musicBand = table.getSelectionModel().getSelectedItem();
             try {
-                date_field.setText(format.format(musicBand.getEstablishmentDate()));
-            }catch (Exception e){
-                date_field.setText("null");
-            }
-            createdate_field.setText(String.valueOf(musicBand.getCreationDate()));
-            del_yes_button.setVisible(false);
-            del_no_button.setVisible(false);
-            del_button.setVisible(true);
-            add_button.setDisable(false);
-            del_button.setDisable(false);
-            update_button.setDisable(false);
-        } catch (Exception e){
-            e.printStackTrace();
+                update_figure(musicBand);
+                id = musicBand.getID();
+                name_field.setText(musicBand.getName());
+                x_field.setText(String.valueOf(musicBand.getCoordinates().getX()));
+                y_field.setText(String.valueOf(musicBand.getCoordinates().getY()));
+                genre_field.setText(String.valueOf(musicBand.getGenre()));
+                album_name_field.setText(musicBand.getBestAlbum().getName());
+                album_tracks_field.setText(String.valueOf(musicBand.getBestAlbum().getTracks()));
+                album_length_field.setText(String.valueOf(musicBand.getBestAlbum().getLength()));
+                album_sales_field.setText(String.valueOf(musicBand.getBestAlbum().getSales()));
+                np_field.setText(String.valueOf(musicBand.getNumberOfParticipants()));
+                description_field.setText(musicBand.getDescription());
+                try {
+                    date_field.setText(format.format(musicBand.getEstablishmentDate()));
+                } catch (Exception e) {
+                    date_field.setText("null");
+                }
+                createdate_field.setText(String.valueOf(musicBand.getCreationDate()));
+                del_yes_button.setVisible(false);
+                del_no_button.setVisible(false);
+                del_button.setVisible(true);
+                add_button.setDisable(false);
+                del_button.setDisable(false);
+                update_button.setDisable(false);
+            } catch (Exception ignored) { }
+        }
+        else{
+            clean_fields();
         }
     }
 
@@ -320,7 +313,7 @@ public class MainController {
             del_no_button.setVisible(true);
         }
         else{
-            error_windows("Вы не выбрали объект");
+            error_windows("Вы не выбрали объект", Color.RED);
         }
     }
     @FXML
@@ -330,7 +323,7 @@ public class MainController {
             if (result.equals("Объект удален")) {
                 update_table();
             } else {
-                error_windows(result);
+                error_windows(result, Color.RED);
             }
             del_button.setVisible(true);
             del_button.setDisable(true);
@@ -340,7 +333,7 @@ public class MainController {
             id = null;
         }
         else{
-            error_windows("Вы не выбрали объект");
+            error_windows("Вы не выбрали объект", Color.RED);
         }
     }
     @FXML
@@ -459,7 +452,14 @@ public class MainController {
             if(res) {
                 viewError("");
                 setDefaultTheme();
-                MusicBand musicBand = new MusicBand(0L, name_field.getText(), new Coordinates(Double.parseDouble(x_field.getText()), Float.parseFloat(y_field.getText())), LocalDateTime.now(), Integer.parseInt(np_field.getText()), description_field.getText(), format.parse(date_field.getText()), Enum.valueOf(MusicGenre.class, genre_field.getText()), new Album(album_name_field.getText(), Integer.parseInt(album_tracks_field.getText()), Integer.parseInt(album_length_field.getText()), Integer.parseInt(album_sales_field.getText())), ClientController.name);
+                Date date;
+                if(date_field.getText().equals("") || date_field.getText().equals("null")){
+                    date = null;
+                }
+                else {
+                    date = format.parse(date_field.getText());
+                }
+                MusicBand musicBand = new MusicBand(0L, name_field.getText(), new Coordinates(Double.parseDouble(x_field.getText()), Float.parseFloat(y_field.getText())), LocalDateTime.now(), Integer.parseInt(np_field.getText()), description_field.getText(), date, Enum.valueOf(MusicGenre.class, genre_field.getText()), new Album(album_name_field.getText(), Integer.parseInt(album_tracks_field.getText()), Integer.parseInt(album_length_field.getText()), Integer.parseInt(album_sales_field.getText())), ClientController.name);
                 fastWrite(new Message(new Add(), musicBand));
                 mbData = FXCollections.observableArrayList();
                 mbData.addAll(ClientController.data);
@@ -501,6 +501,10 @@ public class MainController {
         text_error.setVisible(false);
         chech_error1.setVisible(false);
         text_error1.setVisible(false);
+        triangle.setVisible(false);
+        square.setVisible(false);
+        circle.setVisible(false);
+        user_color.setVisible(false);
     }
 
     private void setDefaultTheme() {
@@ -625,7 +629,7 @@ public class MainController {
                     update_figure(musicBand);
                     String result = fastWrite(new Message(new Update(), musicBand, String.valueOf(id)));
                     if(!result.equals("Команда update выполнена")){
-                        error_windows(result);
+                        error_windows(result, Color.RED);
                     }
                     update_table();
                 }
@@ -639,7 +643,7 @@ public class MainController {
             update_table();
         }
         else{
-            error_windows("Вы не выбрали объект");
+            error_windows("Вы не выбрали объект", Color.RED);
         }
     }
 
@@ -662,8 +666,9 @@ public class MainController {
         triangle.setVisible(false);
         square.setVisible(false);
         circle.setVisible(false);
+        user_color.setVisible(false);
 
-        update_language(Main.language);
+        update_language();
     }
 
     @FXML
@@ -682,10 +687,7 @@ public class MainController {
         }
         else {
             name_filter_contains.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            String result = fastWrite(new Message(new FilterContainsName(), name_filter_contains.getText()));
-            if (!result.equals("Объект удален")) {
-                error_windows(result);
-            }
+            fastWrite(new Message(new FilterContainsName(), name_filter_contains.getText()));
             update_table();
         }
     }
@@ -713,14 +715,19 @@ public class MainController {
     @FXML
     public void delallYes(MouseEvent mouseEvent) {
         String result = fastWrite(new Message(new Clear()));
-        if (result.equals("Объект удален")) {
-            update_table();
-        } else {
-            error_windows(result);
+        int i = 0;
+        for(MusicBand musicBand : ClientController.data) {
+            if(musicBand.getUser_creator().equals(ClientController.name)) {
+                fastWrite(new Message(new RemoveByID(), String.valueOf(musicBand.getID())));
+                i++;
+            }
         }
+        error_windows("Удалено: "+i+" объектов", Color.WHITE);
+
         del_all_button.setVisible(true);
         del_all_yes_button.setVisible(false);
         del_all_no_button.setVisible(false);
+        update_table();
     }
 
     @FXML
@@ -741,9 +748,11 @@ public class MainController {
             description.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
             String result = fastWrite(new Message(new RemoveByDescription(), description.getText()));
             if (!result.equals("Объект удален")) {
-                error_windows(result);
+                error_windows(result, Color.RED);
             }
             update_table();
+            chech_error1.setVisible(false);
+            text_error1.setVisible(false);
         }
     }
 
@@ -794,9 +803,8 @@ public class MainController {
                 viewError("");
                 setDefaultTheme();
                 MusicBand musicBand = new MusicBand(0L, "", new Coordinates(0, 0f), LocalDateTime.now(), 0, "", null, MusicGenre.POP, new Album(album_name_field1.getText(), Integer.parseInt(album_tracks_field1.getText()), Integer.parseInt(album_length_field1.getText()), Integer.parseInt(album_sales_field1.getText())), ClientController.name);
-                fastWrite(new Message(new CountGreaterThanBestAlbum(), musicBand));
-                mbData = FXCollections.observableArrayList();
-                mbData.addAll(ClientController.data);
+                error_windows(fastWrite(new Message(new CountGreaterThanBestAlbum(), musicBand)), Color.WHITE);
+                update_table();
             }
         } catch (Exception e){
             viewError("Что-то пошло не так");
@@ -845,12 +853,18 @@ public class MainController {
         text_error1.setVisible(false);
         update_button.setDisable(true);
         id = null;
+        fastWrite(new Message(new Show()));
         update_table();
     }
 
-    void update_language(String language){
-        String[] lan = language.split("_");
-        Locale current = new Locale(lan[0], lan[1]);
+    void update_language(){
+        String[] lan = Main.language.split("_");
+        Locale current;
+        if(lan.length>1) {
+            current = new Locale(lan[0], lan[1]);
+        }else{
+            current = new Locale(lan[0]);
+        }
         ResourceBundle rb = ResourceBundle.getBundle("Client", current);
         //ResourceBundle bundle = ResourceBundle.getBundle("com.example.i18n.text", new UTF8Control());
         map_button.setText(rb.getString("map_button"));
@@ -905,7 +919,7 @@ public class MainController {
 
     public void change_language(MouseEvent mouseEvent) {
         Main.change_language();
-        update_language(Main.language);
+        update_language();
     }
 
     private void update_figure(MusicBand musicBand) {
@@ -913,34 +927,50 @@ public class MainController {
             triangle.setVisible(false);
             square.setVisible(false);
             circle.setVisible(false);
+            user_color.setVisible(false);
         } else {
             triangle.setVisible(false);
             square.setVisible(false);
             circle.setVisible(false);
+            user_color.setVisible(false);
             int r = Math.abs(musicBand.getName().hashCode() % 250);
             int g = Math.abs(musicBand.getName().hashCode() * 250000 % 250);
             int b = Math.abs(musicBand.getName().hashCode() * 250000000 % 250);
             Color color = Color.rgb(r, g, b);
+            r = Math.abs(musicBand.getUser_creator().hashCode() % 250);
+            g = Math.abs(musicBand.getUser_creator().hashCode() * 250000 % 250);
+            b = Math.abs(musicBand.getUser_creator().hashCode() * 250000000 % 250);
+            Color ucolor = Color.rgb(r, g, b);
             switch (musicBand.getGenre()) {
                 case PSYCHEDELIC_ROCK:
                     square.setFill(color);
                     square.setVisible(true);
+                    user_color.setFill(ucolor);
+                    user_color.setVisible(true);
                     break;
                 case RAP:
                     triangle.setFill(color);
                     triangle.setVisible(true);
+                    user_color.setFill(ucolor);
+                    user_color.setVisible(true);
                     break;
                 case POP:
                     circle.setFill(color);
                     circle.setVisible(true);
+                    user_color.setFill(ucolor);
+                    user_color.setVisible(true);
                     break;
                 case POST_ROCK:
                     square.setFill(color);
                     square.setVisible(true);
+                    user_color.setFill(ucolor);
+                    user_color.setVisible(true);
                     break;
                 case POST_PUNK:
                     square.setFill(color);
                     square.setVisible(true);
+                    user_color.setFill(ucolor);
+                    user_color.setVisible(true);
                     break;
             }
         }
@@ -953,6 +983,15 @@ public class MainController {
             Main.stage.setScene(new Scene(root));
             Main.stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void info(MouseEvent mouseEvent) {
+        try{
+            error_windows(fastWrite(new Message(new Info())), Color.WHITE);
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
     }

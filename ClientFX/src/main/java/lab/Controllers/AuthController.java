@@ -189,11 +189,16 @@ public class AuthController {
 
     void update_language(String language){
         String[] lan = language.split("_");
-        Locale current = new Locale(lan[0], lan[1]);
+        Locale current;
+        if (lan.length>1) {
+            current = new Locale(lan[0], lan[1]);
+        }else{
+            current = new Locale(lan[0]);
+        }
         ResourceBundle rb = ResourceBundle.getBundle("Client", current);
         //ResourceBundle rb = ResourceBundle.getBundle("Client", new UTF8Control());
         language_button.setText(rb.getString("language_button"));
-        login_text.setText(new String(rb.getString("login_text").getBytes(), StandardCharsets.UTF_8));
+        login_text.setText(rb.getString("login_text"));
         register_text.setText(rb.getString("register_text"));
         login_name_error.setText(rb.getString("login_name_error"));
         login_pass_error.setText(rb.getString("login_pass_error"));

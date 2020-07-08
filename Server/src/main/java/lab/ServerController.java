@@ -1,5 +1,6 @@
 package lab;
 
+import lab.BasicClasses.MusicBand;
 import lab.Commands.Command;
 import lab.Commands.ConcreteCommands.Auth;
 import lab.Commands.ConcreteCommands.Register;
@@ -13,6 +14,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +28,9 @@ public class ServerController implements Runnable {
 	static final String host = "127.0.0.1";
 	static int port = 1010;
 	private static final List<Message> incomingMessages = new LinkedList<>();
+	public static boolean filter = false;
+	public static ArrayList<MusicBand> filterArray;
+
 
 	ServerController(String port){
 		ServerController.port = Integer.parseInt(port);
@@ -133,6 +138,10 @@ public class ServerController implements Runnable {
 			}
 			Message message = new Message(result);
 			message.setArraylist(BD.getData());
+			if (filter){
+				message.setArraylist(filterArray);
+				filter = false;
+			}
 			sendSocketObject(channel, message);
 			channel.register(selector, SelectionKey.OP_READ);
 			return true;

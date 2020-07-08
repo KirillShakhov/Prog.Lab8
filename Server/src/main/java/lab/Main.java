@@ -1,10 +1,10 @@
 package lab;
 
 public class Main {
+    public static String DB_URL;
+    public static String USER;
+    public static String PASS;
     public static void main(String[] args) {
-        final String DB_URL;
-        final String USER;
-        final String PASS;
 
         if(args.length>0 && args[0].equals("mypc")){
             DB_URL = "jdbc:postgresql://localhost:5555/postgres";

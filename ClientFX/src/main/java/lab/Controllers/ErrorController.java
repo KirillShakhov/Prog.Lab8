@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lab.Main;
@@ -14,6 +15,7 @@ import lab.Main;
 public class ErrorController {
 
     public static String text;
+    public static Color color;
     @FXML
     private ResourceBundle resources;
 
@@ -65,5 +67,6 @@ public class ErrorController {
     void initialize() {
         version_text.setText(String.valueOf(Main.version));
         error_text.setText(text);
+        error_text.setFill(color);
     }
 }

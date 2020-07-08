@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ResourceBundleManager">
+    <file url="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_en_US.properties" />
+    <file url="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_fr.properties" />
+    <file url="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_mk.properties" />
+    <file url="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_ru_RU.properties" />
+    <custom-resource-bundle>
+      <file value="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_en_US.properties" />
+      <file value="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_fr.properties" />
+      <file value="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_mk.properties" />
+      <file value="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_ru_RU.properties" />
+      <file value="file://$PROJECT_DIR$/ClientFX/src/main/resources/Client_sp_HD.properties" />
+      <base-name>Client</base-name>
+    </custom-resource-bundle>
+  </component>
+</project>

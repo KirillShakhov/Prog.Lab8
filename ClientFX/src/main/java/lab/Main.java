@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lab.Controllers.ErrorController;
@@ -44,10 +45,11 @@ public class Main extends Application{
 
     }
 
-    public static void error_windows(String text) {
+    public static void error_windows(String text, Color color) {
         try {
             ErrorController.text = text;
-            Parent root = FXMLLoader.load(Main.class.getResource("/error.fxml"));
+            ErrorController.color = color;
+            Parent root = FXMLLoader.load(Main.class.getResource("/error"+Main.theme+".fxml"));
             if(stage_error == null){
                 stage_error = new Stage();
                 stage_error.initStyle(StageStyle.UNDECORATED);
@@ -73,11 +75,20 @@ public class Main extends Application{
 
     public static void change_language(){
         switch (Main.language) {
-            case "ru_RU":
-                Main.language = "en_US";
-                break;
             case "en_US":
                 Main.language = "ru_RU";
+                break;
+            case "ru_RU":
+                Main.language = "mk";
+                break;
+            case "mk":
+                Main.language = "fr";
+                break;
+            case "fr":
+                Main.language = "sp_HD";
+                break;
+            case "sp_HD":
+                Main.language = "en_US";
                 break;
         }
     }

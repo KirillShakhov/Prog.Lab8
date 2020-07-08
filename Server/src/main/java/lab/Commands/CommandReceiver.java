@@ -7,10 +7,13 @@ import lab.BasicClasses.MusicBand;
 import lab.BasicClasses.MusicGenre;
 import lab.BasicClasses.User;
 import lab.Commands.SerializedCommands.Message;
+import lab.Main;
+import lab.ServerController;
 import lab.Utils.Validator;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * Ресивер(получатель), отправляет серилизованные объекты на сервер.
@@ -141,7 +144,7 @@ public class CommandReceiver {
 
     public String  clear() {
         BD.clean();
-
+        new BD(Main.DB_URL, Main.USER, Main.PASS);
         return "Коллекция успешно очищена.";
     }
 
@@ -157,6 +160,16 @@ public class CommandReceiver {
     }
 
     public String  filterContainsName(String arg) {
+        BD.sort();
+        ArrayList<MusicBand> musicBands = new ArrayList<>();
+        for(MusicBand musicBand : BD.getData()){
+            if(musicBand.getName().contains(arg)){
+                musicBands.add(musicBand);
+            }
+        }
+        ServerController.filterArray = musicBands;
+        ServerController.filter = true;
+
         StringBuilder result = new StringBuilder();
         int j = 0;
         for (Long i = 0L; i < BD.size(); i++) {
