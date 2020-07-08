@@ -1,3 +1,4 @@
+lab\ServerController$Connector.class
 lab\Utils\Validator.class
 lab\Commands\ConcreteCommands\FilterContainsName.class
 lab\Main.class
@@ -17,10 +18,13 @@ lab\BasicClasses\MusicGenre.class
 lab\Commands\ConcreteCommands\RemoveGreater.class
 lab\Commands\ConcreteCommands\RemoveLower.class
 lab\Commands\CommandReceiver.class
+lab\ServerController$CommandExecute.class
 lab\BasicClasses\User.class
 lab\Commands\ConcreteCommands\Show.class
 lab\BasicClasses\Coordinates.class
+lab\ServerController$Reader.class
 lab\BasicClasses\MusicBand.class
 lab\Commands\ConcreteCommands\CountGreaterThanBestAlbum.class
 lab\Commands\ConcreteCommands\Register.class
 lab\Commands\SerializedCommands\Message.class
+lab\ServerController$Writer.class

@@ -8,11 +8,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
+import java.util.stream.Stream;
+
 import org.postgresql.Driver;
 
 
@@ -25,8 +27,8 @@ public class BD {
     /** Поле, которое хранит путь до файла с базой данных */
     static Connection connection = null;
     /** Колекция, которая используется для представления данных в работающей программе. */
-    private static ArrayList<MusicBand> data = new ArrayList<>();
-    private static ArrayList<User> users = new ArrayList<>();
+    private static List<MusicBand> data = Collections.synchronizedList(new ArrayList<>());
+    private static List<User> users = Collections.synchronizedList(new ArrayList<>());
     /** Лист, который хранит историю введённых команд. */
     private static ArrayList<String> history = new ArrayList<>();
 
@@ -99,17 +101,18 @@ public class BD {
         return 0;*/
 
         boolean is = false;
-        for(int result = 0; result < data.size(); result++){
-            for(MusicBand m : data){
-                if(m.getID() == result){
-                    is = true;
+        synchronized(data) {
+            for (int result = 0; result < data.size(); result++) {
+                for (MusicBand m : data) {
+                    if (m.getID() == result) {
+                        is = true;
+                    }
                 }
-            }
-            if(is){
-                is = false;
-            }
-            else{
-                return result;
+                if (is) {
+                    is = false;
+                } else {
+                    return result;
+                }
             }
         }
         return data.size();
@@ -206,7 +209,9 @@ public class BD {
 
             int numberOfUpdatedRows = statement.executeUpdate();
             //connection.commit();
-            data.set(Math.toIntExact(id), musicBand);
+            synchronized(data) {
+                data.set(Math.toIntExact(id), musicBand);
+            }
             return true;
         }
         catch (Exception e){
@@ -239,11 +244,13 @@ public class BD {
 
     public static String removeGreater(MusicBand musicBand) {
         int f = 0;
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).getNumberOfParticipants() > musicBand.getNumberOfParticipants()) {
-                //noinspection SuspiciousListRemoveInLoop
-                data.remove(i);
-                f++;
+        synchronized(data) {
+            for (int i = 0; i < data.size(); i++) {
+                if (data.get(i).getNumberOfParticipants() > musicBand.getNumberOfParticipants()) {
+                    //noinspection SuspiciousListRemoveInLoop
+                    data.remove(i);
+                    f++;
+                }
             }
         }
         return String.format("Удалено %s элементов", f);
@@ -282,15 +289,18 @@ public class BD {
                 int album_length = resultSet.getInt("ALBUM_LENGTH");
                 int album_sales = resultSet.getInt("ALBUM_SALES");
                 String user_creator = resultSet.getString("USER_CREATOR");
-
-                BD.data.add(new MusicBand(id, name, new Coordinates(x, y), ldt, number_of_participants, description, establishmentDate, MusicGenre.valueOf(genre), new Album(album_name, album_tracks, album_length, album_sales), user_creator));
+                synchronized(data) {
+                    BD.data.add(new MusicBand(id, name, new Coordinates(x, y), ldt, number_of_participants, description, establishmentDate, MusicGenre.valueOf(genre), new Album(album_name, album_tracks, album_length, album_sales), user_creator));
+                }
             }
             SQL = "SELECT * FROM USERS";
             resultSet = connection.createStatement().executeQuery(SQL);
             while (resultSet.next()) {
                 String name = resultSet.getString("NAME");
                 String pass = resultSet.getString("PASS");
-                users.add(new User(name, pass));
+                synchronized(users) {
+                    users.add(new User(name, pass));
+                }
             }
             BD.sort();
             return true;
@@ -366,7 +376,9 @@ public class BD {
             preparedStatement.setString(14, user_creator);
             preparedStatement.executeUpdate();
 
-            data.add(musicBand);
+            synchronized(data) {
+                data.add(musicBand);
+            }
             return true;
         }
         catch (Exception e){
@@ -383,7 +395,9 @@ public class BD {
             System.out.println(sql);
 
             stmt.executeUpdate(sql);
-            BD.users.add(new User(user.getName(), sha1(user.getPass())));
+            synchronized(users) {
+                BD.users.add(new User(user.getName(), sha1(user.getPass())));
+            }
             return true;
         }
         catch (Exception e){
@@ -407,7 +421,9 @@ public class BD {
             Statement stmt = connection.createStatement();
             String sql = String.format("DELETE from DATA_BD where ID=%d;", id);
             stmt.executeUpdate(sql);
-            data.removeIf(m -> m.getID() == id);
+            synchronized(data) {
+                data.removeIf(m -> m.getID() == id);
+            }
             return true;
         }
         catch (Exception ignored){}
@@ -419,7 +435,9 @@ public class BD {
      * */
     public static boolean clean(){
         try {
-            data = new ArrayList<>();
+            synchronized(data) {
+                data = new ArrayList<>();
+            }
             return true;
         }
         catch (Exception e){
@@ -449,13 +467,19 @@ public class BD {
      * @return Объект MusicBand.
      * */
     public static MusicBand get(Long id){
-        return data.get(Math.toIntExact(id));
+        synchronized(data) {
+            return data.get(Math.toIntExact(id));
+        }
     }
     /** Метод, позволяет получить количество элементов в коллекции.
      *
      * @return int - колличество элементов.
      * */
-    public static int size(){return data.size();}
+    public static int size(){
+        synchronized(data) {
+            return data.size();
+        }
+    }
     /** Метод, позволяет записать команду в историю.
      *
      * @param command Команда, которую надо записать.
@@ -463,18 +487,21 @@ public class BD {
     public void log(String command) { history.add(command); }
     /** Метод, позволяет отсортировать массив по текущему методу сортировки.*/
     public static void sort(){
-        if(!BD.reverse){
-            data.sort(Comparator.comparingLong(MusicBand::getID));
-        }
-        else{
-            data.sort((player2, player1) -> Long.compare(player1.getID(), player2.getID()));
+        synchronized(data) {
+            if (!BD.reverse) {
+                data.sort(Comparator.comparingLong(MusicBand::getID));
+            } else {
+                data.sort((player2, player1) -> Long.compare(player1.getID(), player2.getID()));
+            }
         }
     }
 
     public static boolean checkExist(Long groupId) {
-        for (MusicBand musicBand:data) {
-            if (musicBand.getID() == groupId) {
-                return true;
+        synchronized(data) {
+            for (MusicBand musicBand : data) {
+                if (musicBand.getID() == groupId) {
+                    return true;
+                }
             }
         }
         return false;
@@ -482,11 +509,13 @@ public class BD {
 
     public static String removeLower(MusicBand musicBand) {
         int f = 0;
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).getNumberOfParticipants() < musicBand.getNumberOfParticipants()) {
-                //noinspection SuspiciousListRemoveInLoop
-                data.remove(i);
-                f++;
+        synchronized(data) {
+            for (int i = 0; i < data.size(); i++) {
+                if (data.get(i).getNumberOfParticipants() < musicBand.getNumberOfParticipants()) {
+                    //noinspection SuspiciousListRemoveInLoop
+                    data.remove(i);
+                    f++;
+                }
             }
         }
         return String.format("Удалено %s элементов", f);
@@ -535,10 +564,12 @@ public class BD {
 
     public static int authUser(String name, String pass){
         User result = null;
-        for(User user : users){
-            if(user.getName().equals(name)){
-                result = user;
-                break;
+        synchronized(users) {
+            for (User user : users) {
+                if (user.getName().equals(name)) {
+                    result = user;
+                    break;
+                }
             }
         }
         if(result != null){
@@ -559,10 +590,12 @@ public class BD {
 
     public static int registerUser(String name, String pass){
         User result = null;
-        for(User user : users){
-            if(user.getName().equals(name)){
-                result = user;
-                break;
+        synchronized(users) {
+            for (User user : users) {
+                if (user.getName().equals(name)) {
+                    result = user;
+                    break;
+                }
             }
         }
         if(result != null){
@@ -570,19 +603,21 @@ public class BD {
             return -1;
         }
         else {
-            users.add(new User(name, sha1(pass)));
+            synchronized(users) {
+                users.add(new User(name, sha1(pass)));
+            }
             System.out.println("Пользователь зарегистрирован");
             return 0;// Пользователь зарегистрирован
         }
     }
     public static boolean checkPass(String name, String pass){
-        System.out.println(name + "   " + pass);
-        System.out.println(users.toString());
         User result = null;
-        for(User user : users){
-            if(user.getName().equals(name)){
-                result = user;
-                break;
+        synchronized(users) {
+            for(User user : users) {
+                if (user.getName().equals(name)) {
+                    result = user;
+                    break;
+                }
             }
         }
         if(result != null){
@@ -593,6 +628,9 @@ public class BD {
     }
 
     public static ArrayList<MusicBand> getData() {
-        return data;
+        synchronized(data) {
+            ArrayList<MusicBand> musicBands = new ArrayList<>(data);
+            return musicBands;
+        }
     }
 }

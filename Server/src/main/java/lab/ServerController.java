@@ -1,5 +1,6 @@
 package lab;
 
+import javafx.beans.binding.When;
 import lab.BasicClasses.MusicBand;
 import lab.Commands.Command;
 import lab.Commands.ConcreteCommands.Auth;
@@ -14,10 +15,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.lang.Thread.sleep;
 
@@ -27,9 +27,14 @@ public class ServerController implements Runnable {
 	private static final int BUFF_SIZE = 1000000;
 	static final String host = "127.0.0.1";
 	static int port = 1010;
-	private static final List<Message> incomingMessages = new LinkedList<>();
+	private static final List<Message> incomingMessages = Collections.synchronizedList(new LinkedList<>());
+	private static final List<Message> outcomingMessages = Collections.synchronizedList(new LinkedList<>());
 	public static boolean filter = false;
 	public static ArrayList<MusicBand> filterArray;
+
+	static Iterator<SelectionKey> iterator;
+	static Selector selector;
+	static ServerSocketChannel server;
 
 
 	ServerController(String port){
@@ -40,8 +45,8 @@ public class ServerController implements Runnable {
 		//noinspection ResultOfMethodCallIgnored
 		Runtime.getRuntime().addShutdownHook(new Thread(BD::save));
 		try {
-			Selector selector = Selector.open();
-			ServerSocketChannel server = ServerSocketChannel.open();
+			selector = Selector.open();
+			server = ServerSocketChannel.open();
 			server.configureBlocking(false);
 			server.socket().bind(new InetSocketAddress(host, port));
 			server.register(selector, SelectionKey.OP_ACCEPT);
@@ -71,11 +76,16 @@ public class ServerController implements Runnable {
 					SelectionKey key = iterator.next();
 					iterator.remove();
 					if (selector.isOpen()) {
-						if(connectThread(key, selector, server)){continue;}
-						if(readThread(key, selector)){continue;}
-						if(writeThread(key, selector)){continue;}
-						//noinspection BusyWait
-						sleep(100);
+						if(key.isValid() && key.isAcceptable()) {
+							new Connector(key).run();
+						}
+						if(key.isValid() && key.isReadable()) {
+							new Reader(key).run();
+						}
+						new CommandExecute(key).run();
+						if(key.isValid() && key.isWritable()) {
+							new Writer(key).run();
+						}
 					}
 				}
 			}
@@ -88,9 +98,12 @@ public class ServerController implements Runnable {
 		}
 	}
 
+
 	public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
 		ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
-		socketChannel.read(data);
+		synchronized(socketChannel) {
+			socketChannel.read(data);
+		}
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data.array());
 		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 		Message message = (Message)objectInputStream.readObject();
@@ -101,8 +114,10 @@ public class ServerController implements Runnable {
 	private static void sendSocketObject(SocketChannel client, Message message) throws IOException {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-		objectOutputStream.writeObject(message);
-		objectOutputStream.flush();
+		synchronized (objectOutputStream) {
+			objectOutputStream.writeObject(message);
+			objectOutputStream.flush();
+		}
 		client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
 	}
 
@@ -122,34 +137,67 @@ public class ServerController implements Runnable {
 			System.exit(0);
 		}
 	}
-
-	private static boolean writeThread(SelectionKey key, Selector selector) throws IOException {
-		if (key.isWritable() && key.isValid()) {
+	static class Writer implements Runnable{
+		SelectionKey key;
+		Writer(SelectionKey key){
+			this.key = key;
+		}
+		@Override
+		public void run() {
 			SocketChannel channel = (SocketChannel) key.channel();
-			String result = "Неизвестная команда";
-			for (Message mes : incomingMessages){
-				if(BD.checkPass(mes.getUser_name(), mes.getPass()) || (mes.getCommand().getClass() == Auth.class) || (mes.getCommand().getClass() == Register.class)) {
-					if(mes.getSocketChannel().equals(channel)){
-						Command command = mes.getCommand();
-						result = command.execute(mes);
+			for (Message mes : outcomingMessages) {
+				if (mes.getSocketChannel().equals(channel)) {
+					try {
+						sendSocketObject(channel, mes);
+						outcomingMessages.remove(mes);
+						channel.register(selector, SelectionKey.OP_READ);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
-				incomingMessages.remove(mes);
 			}
-			Message message = new Message(result);
-			message.setArraylist(BD.getData());
-			if (filter){
-				message.setArraylist(filterArray);
-				filter = false;
-			}
-			sendSocketObject(channel, message);
-			channel.register(selector, SelectionKey.OP_READ);
-			return true;
 		}
-		return false;
 	}
-	private static boolean readThread(SelectionKey key, Selector selector) throws IOException {
-		if (key.isReadable() && key.isValid()) {
+
+	static class CommandExecute implements Runnable{
+		SelectionKey key;
+		public CommandExecute(SelectionKey key) {
+			this.key = key;
+		}
+
+		@Override
+		public void run() {
+			String result = "Неизвестная команда";
+			for (Message mes : incomingMessages) {
+				if (BD.checkPass(mes.getUser_name(), mes.getPass()) || (mes.getCommand().getClass() == Auth.class) || (mes.getCommand().getClass() == Register.class)) {
+					Command command = mes.getCommand();
+					try {
+						result = command.execute(mes);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				Message message = new Message(result);
+				message.setArraylist(BD.getData());
+				if (filter) {
+					message.setArraylist(filterArray);
+					filter = false;
+				}
+				message.setSocketChannel(mes.getSocketChannel());
+
+				incomingMessages.remove(mes);
+				outcomingMessages.add(message);
+			}
+		}
+	}
+
+	static class Reader implements Runnable{
+		SelectionKey key;
+		Reader(SelectionKey key){
+			this.key = key;
+		}
+		@Override
+		public void run() {
 			SocketChannel channel = (SocketChannel) key.channel();
 			try {
 				Message message = getSocketObject(channel);
@@ -159,20 +207,29 @@ public class ServerController implements Runnable {
 			}
 			catch (IOException | ClassNotFoundException e){
 				System.out.println("Клиент отключился");
-				channel.close();
+				try {
+					channel.close();
+				} catch (IOException ioException) {
+					ioException.printStackTrace();
+				}
 			}
-			return true;
 		}
-		return false;
 	}
-	private static boolean connectThread(SelectionKey key, Selector selector, ServerSocketChannel server) throws IOException {
-		if (key.isAcceptable() && key.isValid()) {
-			SocketChannel client = server.accept();
-			client.configureBlocking(false);
-			client.register(selector, SelectionKey.OP_READ);
-			System.out.println("Новое подключение");
-			return true;
+	static class Connector implements Runnable{
+		SelectionKey key;
+		Connector(SelectionKey key){
+			this.key = key;
 		}
-		return false;
+		@Override
+		public void run() {
+			try {
+				SocketChannel client = server.accept();
+				client.configureBlocking(false);
+				client.register(selector, SelectionKey.OP_READ);
+				System.out.println("Новое подключение");
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 }
