@@ -112,10 +112,6 @@ public class MapController {
             Main.stage.setX(events.getScreenX() - xOffSet);
             Main.stage.setY(events.getScreenY() - yOffSet);
         });
-        if(!initial){
-            animation();
-            initial=true;
-        }
     }
 
 
@@ -126,12 +122,8 @@ public class MapController {
         name.setText(ClientController.name);
         update_language();
 
-        // init timeline
-        timeline = new Timeline();
-        timeline.setCycleCount( Timeline.INDEFINITE );
-        timeline.setAutoReverse( true );
 
-
+/*
         for(MusicBand musicBand : ClientController.data) {
             //triangle.setVisible(false);
             //square.setVisible(false);
@@ -224,6 +216,9 @@ public class MapController {
                     break;
             }
         }
+
+ */
+        animation();
     }
 
     @FXML
@@ -244,12 +239,12 @@ public class MapController {
 
 
             Circle t = new Circle(musicBand.getNumberOfParticipants());
-            t.setCenterX(const_x);
-            t.setCenterY(const_y);
-            t.setFill(color);
-            //objects.getChildren().add(t);
+            t.setCenterX(const_x+musicBand.getCoordinates().getX());
+            t.setCenterY(const_y-musicBand.getCoordinates().getY());
+            t.setFill(ucolor);
+            objects.getChildren().add(t);
         }
-
+/*
         double finish_x = const_x+100;
         double finish_y = const_y-100;
 
@@ -361,6 +356,8 @@ public class MapController {
                 }
             }
         }
+
+ */
     }
 
     private void frameX(Circle t, double i) {

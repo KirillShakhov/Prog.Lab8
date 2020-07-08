@@ -625,7 +625,14 @@ public class MainController {
                 if(res) {
                     viewError("");
                     setDefaultTheme();
-                    MusicBand musicBand = new MusicBand(id, name_field.getText(), new Coordinates(Double.parseDouble(x_field.getText()), Float.parseFloat(y_field.getText())), LocalDateTime.now(), Integer.parseInt(np_field.getText()), description_field.getText(), format.parse(date_field.getText()), Enum.valueOf(MusicGenre.class, genre_field.getText()), new Album(album_name_field.getText(), Integer.parseInt(album_tracks_field.getText()), Integer.parseInt(album_length_field.getText()), Integer.parseInt(album_sales_field.getText())), ClientController.name);
+                    Date date;
+                    if(date_field.getText().equals("") || date_field.getText().equals("null")){
+                        date = null;
+                    }
+                    else {
+                        date = format.parse(date_field.getText());
+                    }
+                    MusicBand musicBand = new MusicBand(id, name_field.getText(), new Coordinates(Double.parseDouble(x_field.getText()), Float.parseFloat(y_field.getText())), LocalDateTime.now(), Integer.parseInt(np_field.getText()), description_field.getText(), date, Enum.valueOf(MusicGenre.class, genre_field.getText()), new Album(album_name_field.getText(), Integer.parseInt(album_tracks_field.getText()), Integer.parseInt(album_length_field.getText()), Integer.parseInt(album_sales_field.getText())), ClientController.name);
                     update_figure(musicBand);
                     String result = fastWrite(new Message(new Update(), musicBand, String.valueOf(id)));
                     if(!result.equals("Команда update выполнена")){
