@@ -72,19 +72,20 @@ public class ServerController implements Runnable {
 				}
 				selector.select();
 				Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+
+				ExecutorService executorService = Executors.newFixedThreadPool(2);
 				while (iterator.hasNext()) {
 					SelectionKey key = iterator.next();
-					iterator.remove();
-					if (selector.isOpen()) {
-						if(key.isValid() && key.isAcceptable()) {
+					synchronized (key) {
+						iterator.remove();
+						if (selector.isOpen()) {
 							new Connector(key).run();
-						}
-						if(key.isValid() && key.isReadable()) {
-							new Reader(key).run();
-						}
-						new CommandExecute(key).run();
-						if(key.isValid() && key.isWritable()) {
-							new Writer(key).run();
+							Reader reader = new Reader(key);
+							Thread r = new Thread(reader);
+							r.start();
+							r.join();
+							executorService.submit(new CommandExecute(key));
+							executorService.submit(new Writer(key));
 						}
 					}
 				}
@@ -144,15 +145,20 @@ public class ServerController implements Runnable {
 		}
 		@Override
 		public void run() {
-			SocketChannel channel = (SocketChannel) key.channel();
-			for (Message mes : outcomingMessages) {
-				if (mes.getSocketChannel().equals(channel)) {
-					try {
-						sendSocketObject(channel, mes);
-						outcomingMessages.remove(mes);
-						channel.register(selector, SelectionKey.OP_READ);
-					} catch (Exception e) {
-						e.printStackTrace();
+			if(key.isValid() && key.isWritable()) {
+
+				SocketChannel channel = (SocketChannel) key.channel();
+				synchronized (outcomingMessages) {
+					for (Message mes : outcomingMessages) {
+						if (mes.getSocketChannel().equals(channel)) {
+							try {
+								sendSocketObject(channel, mes);
+								outcomingMessages.remove(mes);
+								channel.register(selector, SelectionKey.OP_READ);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
 					}
 				}
 			}
@@ -168,49 +174,57 @@ public class ServerController implements Runnable {
 		@Override
 		public void run() {
 			String result = "Неизвестная команда";
-			for (Message mes : incomingMessages) {
-				if (BD.checkPass(mes.getUser_name(), mes.getPass()) || (mes.getCommand().getClass() == Auth.class) || (mes.getCommand().getClass() == Register.class)) {
-					Command command = mes.getCommand();
-					try {
-						result = command.execute(mes);
-					} catch (IOException e) {
-						e.printStackTrace();
+			synchronized (incomingMessages) {
+				for (Message mes : incomingMessages) {
+					if (BD.checkPass(mes.getUser_name(), mes.getPass()) || (mes.getCommand().getClass() == Auth.class) || (mes.getCommand().getClass() == Register.class)) {
+						Command command = mes.getCommand();
+						try {
+							result = command.execute(mes);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					Message message = new Message(result);
+					message.setArraylist(BD.getData());
+					if (filter) {
+						message.setArraylist(filterArray);
+						filter = false;
+					}
+					message.setSocketChannel(mes.getSocketChannel());
+					synchronized (incomingMessages) {
+						incomingMessages.remove(mes);
+					}
+					synchronized (outcomingMessages) {
+						outcomingMessages.add(message);
 					}
 				}
-				Message message = new Message(result);
-				message.setArraylist(BD.getData());
-				if (filter) {
-					message.setArraylist(filterArray);
-					filter = false;
-				}
-				message.setSocketChannel(mes.getSocketChannel());
-
-				incomingMessages.remove(mes);
-				outcomingMessages.add(message);
 			}
 		}
 	}
 
-	static class Reader implements Runnable{
+	static class Reader implements Runnable {
 		SelectionKey key;
 		Reader(SelectionKey key){
 			this.key = key;
 		}
 		@Override
 		public void run() {
-			SocketChannel channel = (SocketChannel) key.channel();
-			try {
-				Message message = getSocketObject(channel);
-				message.setSocketChannel(channel);
-				incomingMessages.add(message);
-				channel.register(selector, SelectionKey.OP_WRITE);
-			}
-			catch (IOException | ClassNotFoundException e){
-				System.out.println("Клиент отключился");
+			if (key.isValid() && key.isReadable()) {
+				SocketChannel channel = (SocketChannel) key.channel();
 				try {
-					channel.close();
-				} catch (IOException ioException) {
-					ioException.printStackTrace();
+					synchronized (incomingMessages) {
+						Message message = getSocketObject(channel);
+						message.setSocketChannel(channel);
+						incomingMessages.add(message);
+						channel.register(selector, SelectionKey.OP_WRITE);
+					}
+				} catch (IOException | ClassNotFoundException e) {
+					System.out.println("Клиент отключился");
+					try {
+						channel.close();
+					} catch (IOException ioException) {
+						ioException.printStackTrace();
+					}
 				}
 			}
 		}
@@ -222,13 +236,15 @@ public class ServerController implements Runnable {
 		}
 		@Override
 		public void run() {
-			try {
-				SocketChannel client = server.accept();
-				client.configureBlocking(false);
-				client.register(selector, SelectionKey.OP_READ);
-				System.out.println("Новое подключение");
-			}catch (Exception e){
-				e.printStackTrace();
+			if(key.isValid() && key.isAcceptable()) {
+				try {
+					SocketChannel client = server.accept();
+					client.configureBlocking(false);
+					client.register(selector, SelectionKey.OP_READ);
+					System.out.println("Новое подключение");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
