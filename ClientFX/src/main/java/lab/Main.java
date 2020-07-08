@@ -18,7 +18,7 @@ public class Main extends Application{
     public static ClientController clientController;
 
 
-    public static final double version = 0.3;
+    public static final double version = 0.4;
     public static String language = "en_US";
     public static String theme = "Light";
     public static final String host = "127.0.0.1";
