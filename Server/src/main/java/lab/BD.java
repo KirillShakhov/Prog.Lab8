@@ -392,7 +392,6 @@ public class BD {
             String name = user.getName();
             String pass = sha1(user.getPass());
             String sql = String.format("INSERT INTO USERS (NAME,PASS) VALUES ('%s', '%s');", name, pass);
-            System.out.println(sql);
 
             stmt.executeUpdate(sql);
             synchronized(users) {
@@ -416,17 +415,31 @@ public class BD {
      *
      * @return возвращает успешность выполнения метода. true - успех, false - исключение.
      * */
-    public static boolean remove(Long id) {
+    synchronized public static boolean remove(Long id) {
         try {
             Statement stmt = connection.createStatement();
             String sql = String.format("DELETE from DATA_BD where ID=%d;", id);
             stmt.executeUpdate(sql);
-            synchronized(data) {
-                data.removeIf(m -> m.getID() == id);
-            }
+            data.removeIf(m -> m.getID() == id);
             return true;
         }
-        catch (Exception ignored){}
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    synchronized public static boolean remove_by_description(String des, String name) {
+        try {
+            Statement stmt = connection.createStatement();
+            String sql = String.format("DELETE from DATA_BD where DESCRIPTION=%d;", des, name);
+            stmt.executeUpdate(sql);
+            data.removeIf(m -> m.getDescription().equals(des) & m.getUser_creator().equals(name));
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         return false;
     }
     /** Метод, позволяет очищать коллекцию.

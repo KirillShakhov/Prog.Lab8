@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Ресивер(получатель), отправляет серилизованные объекты на сервер.
  */
@@ -44,7 +46,7 @@ public class CommandReceiver {
         return result.toString();
     }
 
-    public String add(MusicBand o) {
+    synchronized public String add(MusicBand o) {
         o.setID(BD.giveID());
         o.setCreationDate(LocalDateTime.now());
         if (Validator.validateMusicBand(o)) {
@@ -62,7 +64,7 @@ public class CommandReceiver {
     /**
      *
      */
-    public String update(Message mes) {
+    synchronized public String update(Message mes) {
         Long groupId;
         try {
             groupId = Long.parseLong(mes.getArgs());
@@ -95,7 +97,7 @@ public class CommandReceiver {
      *
      * @param ID - удаление по ID.
      */
-    public String removeById(String ID, String name) {
+    synchronized public String removeById(String ID, String name) {
         long groupId;
         try {
             groupId = Long.parseLong(ID);
@@ -123,21 +125,17 @@ public class CommandReceiver {
         }
     }
 
-    public String removeByDescription(String description, String name) {
+    synchronized public String removeByDescription(String description, String name) {
         int j = 0;
-        for(Long i = 0L; i < BD.size(); i++){
-            if(BD.get(i).getDescription().equals(description)){
-                if(BD.get(i).getUser_creator().equals(name)) {
-                    if(BD.remove(i)) {
-                        j++;
-                    }
-                }
+        for (MusicBand musicBand : BD.getData()) {
+            if(musicBand.getDescription().equals(description) && musicBand.getUser_creator().equals(name)){
+                BD.remove(musicBand.getID());
+                j++;
             }
         }
-        if(j == 0) {
+        if (j == 0) {
             return "Таких элементов нет";
-        }
-        else{
+        } else {
             return "Удалено " + j + " объектов";
         }
     }
@@ -150,7 +148,7 @@ public class CommandReceiver {
 
 
 
-    public String removeLower(MusicBand musicBand) {
+    synchronized public String removeLower(MusicBand musicBand) {
 
         if (Validator.validateMusicBand(musicBand)) {
             return BD.removeLower(musicBand);
@@ -159,7 +157,7 @@ public class CommandReceiver {
         }
     }
 
-    public String  filterContainsName(String arg) {
+    synchronized public String  filterContainsName(String arg) {
         BD.sort();
         ArrayList<MusicBand> musicBands = new ArrayList<>();
         for(MusicBand musicBand : BD.getData()){
@@ -183,7 +181,7 @@ public class CommandReceiver {
         } else { return "Таких элементов нет";}
     }
 
-    public String countGreaterThanBestAlbum(Album musicBand) {
+    synchronized public String countGreaterThanBestAlbum(Album musicBand) {
         String result = "";
         int j = 0;
         for(long i = 0L; i < BD.size(); i++){
@@ -194,13 +192,13 @@ public class CommandReceiver {
         } else { return "Таких элементов нет";}
     }
 
-    public String reorder() {
+    synchronized public String reorder() {
         BD.reverse = !BD.reverse;
         BD.sort();
         return "Коллекция успешно отсортирована.";
     }
 
-    public String removeGreater(MusicBand mb) {
+    synchronized public String removeGreater(MusicBand mb) {
         if (Validator.validateMusicBand(mb)) {
             return BD.removeGreater(mb);
         } else {
@@ -208,7 +206,7 @@ public class CommandReceiver {
         }
     }
 
-    public String auth(String string) {
+    synchronized public String auth(String string) {
         String[] s = string.split(":::", 2);
         int result = BD.authUser(s[0], s[1]);
         if(result == 1){
@@ -222,7 +220,7 @@ public class CommandReceiver {
         }
     }
 
-    public String register(String string) {
+    synchronized public String register(String string) {
         String[] s = string.split(":::", 2);
         int result = BD.registerUser(s[0], s[1]);
         if(result == 0){

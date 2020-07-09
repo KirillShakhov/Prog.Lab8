@@ -183,7 +183,6 @@ public class AuthController {
     @FXML
     void initialize() {
         version_text.setText(String.valueOf(Main.version));
-        System.out.println(Main.language);
         update_language(Main.language);
     }
 
