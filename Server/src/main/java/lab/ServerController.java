@@ -70,18 +70,15 @@ public class ServerController implements Runnable {
 				selector.select();
 				Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
 
-				ExecutorService executorService = Executors.newFixedThreadPool(2);
+				ExecutorService executorService = Executors.newFixedThreadPool(3);
 				while (iterator.hasNext()) {
 					SelectionKey key = iterator.next();
 					iterator.remove();
 					if (selector.isOpen()) {
-						new Connector(key).run();
-						if(key.isValid() && key.isReadable()) {
-							Reader reader = new Reader(key);
-							Thread r = new Thread(reader);
-							r.start();
-							r.join();
-						}
+						executorService.submit(new Connector(key));
+						Thread r = new Thread(new Reader(key));
+						r.start();
+						r.join();
 						executorService.submit(new CommandExecute(key));
 						executorService.submit(new Writer(key));
 					}
@@ -97,11 +94,9 @@ public class ServerController implements Runnable {
 	}
 
 
-	public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
+	synchronized public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
 		ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
-		synchronized(socketChannel) {
-			socketChannel.read(data);
-		}
+		socketChannel.read(data);
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data.array());
 		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 		Message message = (Message)objectInputStream.readObject();
@@ -109,13 +104,11 @@ public class ServerController implements Runnable {
 		return message;
 	}
 
-	private static void sendSocketObject(SocketChannel client, Message message) throws IOException {
+	synchronized private static void sendSocketObject(SocketChannel client, Message message) throws IOException {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-		synchronized (objectOutputStream) {
-			objectOutputStream.writeObject(message);
-			objectOutputStream.flush();
-		}
+		objectOutputStream.writeObject(message);
+		objectOutputStream.flush();
 		client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
 	}
 
