@@ -508,23 +508,44 @@ public class MainController {
     }
 
     private void setDefaultTheme() {
-        name_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        x_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        y_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        np_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        description_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        genre_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_name_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_tracks_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_length_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_sales_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_name_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_tracks_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_length_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        album_sales_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        date_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-        description.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
-        name_filter_contains.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
+        if(Main.theme.equals("Light")) {
+            name_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            x_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            y_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            np_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            description_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            genre_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_name_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_tracks_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_length_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_sales_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_name_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_tracks_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_length_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            album_sales_field1.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            date_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            description.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
+            name_filter_contains.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
+        }
+        else if(Main.theme.equals("Dark")) {
+            name_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            x_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            y_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            np_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            description_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            genre_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_name_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_tracks_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_length_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_sales_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_name_field1.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_tracks_field1.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_length_field1.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            album_sales_field1.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            date_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            description.setStyle("-fx-background-color: #4C59D8; -fx-background-radius: 10");
+            name_filter_contains.setStyle("-fx-background-color: #4C59D8; -fx-background-radius: 10");
+        }
     }
 
     void viewError(String text){
@@ -773,7 +794,7 @@ public class MainController {
                 album_name_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
             try {
-                if (album_tracks_field1.getText().isEmpty() || Integer.parseInt(album_tracks_field.getText()) <= 0 || !album_tracks_field.getText().matches("[-+]?\\d+")) {
+                if (album_tracks_field1.getText().isEmpty() || Integer.parseInt(album_tracks_field1.getText()) <= 0 || !album_tracks_field1.getText().matches("[-+]?\\d+")) {
                     res = false;
                     viewError("Album tracks число больше 0");
                     album_tracks_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
@@ -784,7 +805,7 @@ public class MainController {
                 album_tracks_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
             try {
-                if (album_length_field1.getText().isEmpty() || Integer.parseInt(album_length_field.getText()) <= 0 || !album_length_field.getText().matches("[-+]?\\d+")) {
+                if (album_length_field1.getText().isEmpty() || Integer.parseInt(album_length_field1.getText()) <= 0 || !album_length_field1.getText().matches("[-+]?\\d+")) {
                     res = false;
                     viewError("Album length число больше 0");
                     album_length_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
@@ -796,7 +817,7 @@ public class MainController {
                 album_length_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             }
             try {
-                if (album_sales_field1.getText().isEmpty() || Integer.parseInt(album_sales_field.getText()) <= 0 || !album_sales_field.getText().matches("[-+]?\\d+")) {
+                if (album_sales_field1.getText().isEmpty() || Integer.parseInt(album_sales_field1.getText()) <= 0 || !album_sales_field1.getText().matches("[-+]?\\d+")) {
                     res = false;
                     viewError("Album sales число больше 0");
                     album_sales_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
@@ -999,6 +1020,17 @@ public class MainController {
             error_windows(fastWrite(new Message(new Info())), Color.WHITE);
         }
         catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void change_theme(MouseEvent mouseEvent) {
+        Main.change_theme();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/main"+Main.theme+".fxml"));
+            Main.stage.setScene(new Scene(root));
+            Main.stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

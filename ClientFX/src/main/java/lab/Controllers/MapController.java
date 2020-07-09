@@ -190,4 +190,15 @@ public class MapController {
         Main.change_language();
         update_language();
     }
+
+    public void change_theme(MouseEvent mouseEvent) {
+        Main.change_theme();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/map"+Main.theme+".fxml"));
+            Main.stage.setScene(new Scene(root));
+            Main.stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -220,4 +220,15 @@ public class AuthController {
         Main.change_language();
         update_language(Main.language);
     }
+
+    public void change_theme(MouseEvent mouseEvent) {
+        Main.change_theme();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/auth"+Main.theme+".fxml"));
+            Main.stage.setScene(new Scene(root));
+            Main.stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

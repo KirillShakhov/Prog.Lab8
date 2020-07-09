@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Stream;
 
 import org.postgresql.Driver;
 
@@ -35,26 +34,6 @@ public class BD {
     public static boolean reverse = false;
 
     private static BD bd = null;
-
-    /*
-    public BD(String file_path) {
-        BD.file_path = file_path;
-        if(load()){
-            System.out.println("Загрузка базы данных успешна");
-        }
-        else{
-            System.out.println("Создана пустая коллекция");
-            if(save()){
-                System.out.println("Файл создан");
-            }
-            else{
-                System.out.println("Нет доступа к файлу");
-                System.exit(0);
-            }
-        }
-    }
-     */
-
     public BD(String db_url, String user, String pass) {
         try {
             Class.forName("org.postgresql.Driver");
@@ -87,19 +66,6 @@ public class BD {
      * @return возвращает int ID
      * */
     public static long giveID(){
-        /*
-        try (ResultSet generatedKeys = connection.createStatement().getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                return generatedKeys.getLong(1);
-            }
-            else {
-                throw new SQLException("Creating user failed, no ID obtained.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;*/
-
         boolean is = false;
         synchronized(data) {
             for (int result = 0; result < data.size(); result++) {
@@ -131,24 +97,6 @@ public class BD {
             e.printStackTrace();
         }
         return 0;
-        /*
-        boolean is = false;
-        for(int result = 0; result < data.size(); result++){
-            for(MusicBand m : data){
-                if(m.getID() == result){
-                    is = true;
-                }
-            }
-            if(is){
-                is = false;
-            }
-            else{
-                return result;
-            }
-        }
-        return data.size();
-
-         */
     }
     /** Метод, позволяющий подметить какой-либо объект по ID.
      * @param id ID объекта, который мы хотим поменять.
@@ -224,21 +172,7 @@ public class BD {
      * @return возвращает успешность выполнения метода. true - успех, false - исключение
      * */
     public static boolean save(){
-        /*
-        try(FileWriter writer = new FileWriter(file_path, false))
-        {
-            Type userListType = new TypeToken<ArrayList<MusicBand>>(){}.getType();
-            String json = new Gson().toJson(data, userListType);
-            writer.write(json);
-            writer.flush();
-            return true;
-        }
-        catch(IOException ex){
-            //Console.sendln(ex.getMessage());
-            return false;
-        }
-
-         */
+        //сохранять нечего
         return true;
     }
 
@@ -253,7 +187,7 @@ public class BD {
                 }
             }
         }
-        return String.format("Удалено %s элементов", f);
+        return String.format("Удалено элементов: %s", f);
     }
 
 
@@ -308,24 +242,6 @@ public class BD {
             e.printStackTrace();
             return false;
         }
-
-
-        /*
-        try {
-            Type userListType = new TypeToken<ArrayList<MusicBand>>(){}.getType();
-            Scanner in = new Scanner(new File(file_path));
-            StringBuffer datas = new StringBuffer();
-            while (in.hasNext()) datas.append(in.nextLine()).append("\n");
-            data = new Gson().fromJson(datas.toString(), userListType);
-            return true;
-        }
-        catch (FileNotFoundException e){
-            return false;
-        }
-
-         */
-
-
     }
     /** Метод, позволяет добавить объект в коллекцию.
      *

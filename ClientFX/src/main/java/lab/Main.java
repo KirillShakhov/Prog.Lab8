@@ -25,6 +25,7 @@ public class Main extends Application{
     public static final String port = "3030";
 
 
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
@@ -89,6 +90,18 @@ public class Main extends Application{
                 break;
             case "sp_HD":
                 Main.language = "en_US";
+                break;
+        }
+    }
+
+
+    public static void change_theme() {
+        switch (Main.theme) {
+            case "Dark":
+                Main.theme = "Light";
+                break;
+            case "Light":
+                Main.theme = "Dark";
                 break;
         }
     }

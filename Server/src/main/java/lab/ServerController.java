@@ -1,6 +1,5 @@
 package lab;
 
-import javafx.beans.binding.When;
 import lab.BasicClasses.MusicBand;
 import lab.Commands.Command;
 import lab.Commands.ConcreteCommands.Auth;
@@ -18,8 +17,6 @@ import java.nio.channels.SocketChannel;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static java.lang.Thread.sleep;
 
 
 public class ServerController implements Runnable {
