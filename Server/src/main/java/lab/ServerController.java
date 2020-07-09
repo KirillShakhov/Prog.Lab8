@@ -68,21 +68,25 @@ public class ServerController implements Runnable {
 					console_line = new StringBuilder();
 				}
 				selector.select();
-				Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+				iterator = selector.selectedKeys().iterator();
+
+
 
 				ExecutorService executorService = Executors.newFixedThreadPool(3);
 				while (iterator.hasNext()) {
 					SelectionKey key = iterator.next();
 					iterator.remove();
 					if (selector.isOpen()) {
+						Thread reader = new Thread(new Reader(key));
+						reader.start();
 						executorService.submit(new Connector(key));
-						Thread r = new Thread(new Reader(key));
-						r.start();
-						r.join();
 						executorService.submit(new CommandExecute(key));
+						reader.join();
 						executorService.submit(new Writer(key));
 					}
 				}
+
+
 			}
 		} catch (SocketException e){
 			System.out.println("Порт занят");
@@ -136,7 +140,6 @@ public class ServerController implements Runnable {
 		@Override
 		public void run() {
 			if(key.isValid() && key.isWritable()) {
-
 				SocketChannel channel = (SocketChannel) key.channel();
 				synchronized (outcomingMessages) {
 					for (Message mes : outcomingMessages) {
