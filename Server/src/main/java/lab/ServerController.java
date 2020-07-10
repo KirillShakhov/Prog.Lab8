@@ -72,7 +72,7 @@ public class ServerController implements Runnable {
 
 
 
-				ExecutorService executorService = Executors.newFixedThreadPool(3);
+				ExecutorService executorService = Executors.newFixedThreadPool(9);
 				while (iterator.hasNext()) {
 					SelectionKey key = iterator.next();
 					iterator.remove();

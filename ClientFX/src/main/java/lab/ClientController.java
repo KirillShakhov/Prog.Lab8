@@ -270,7 +270,7 @@ public class ClientController implements Runnable {
 			if (writeThread(message)) {
 				result = readThread();
 			} else {
-				result = "сообщение не отправлено";
+				result = "Сообщение не отправлено. Попробуйте позже.";
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();

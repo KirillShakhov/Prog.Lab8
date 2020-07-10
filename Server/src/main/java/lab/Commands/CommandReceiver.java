@@ -188,7 +188,7 @@ public class CommandReceiver {
             if(BD.get(i).getSales() > musicBand.getSales()){ j++; }
         }
         if (j != 0) {
-            return j+" элементов";
+            return "Количество элементов: "+j;
         } else { return "Таких элементов нет";}
     }
 
